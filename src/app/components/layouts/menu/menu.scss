@@ -1,0 +1,91 @@
+.menu {
+    background: #ADB5BD;
+    height: 50px;
+    display: flex;
+    font-size: 1.5rem;
+    z-index: 2;
+    position: relative;
+
+    .options {
+        width: 90%;
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+
+        p {
+            cursor: pointer;
+        }
+    }
+
+    .profile {
+        width: 10%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .photo {
+            width: 35%;
+            height: 90%;
+            border: 1px solid black;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+    }
+}
+
+@mixin subMenu () {
+    background: #ADB5BD;
+    font-size: 1.5rem;
+    position: absolute;
+    top: 49px;
+    visibility: hidden;
+    z-index: 1;
+
+    p {
+        margin: 15px;
+        cursor: pointer;
+    }
+}
+
+.rankings {
+    width: 10%;
+    left: 32%;
+    @include subMenu();
+}
+
+.profile-options {
+    right: 1%;
+    @include subMenu()
+}
+
+.show {
+    animation: show 0.2s ease-in forwards;
+}
+
+.hide {
+    animation: hide 0.2s ease-in forwards;
+}
+
+@keyframes show {
+    0% {
+        visibility: hidden;
+        top: -10%;
+    }
+
+    100% {
+        visibility: visible;
+        top: 49px;
+    }
+}
+
+@keyframes hide {
+    0% {
+        visibility: visible;
+        top: 49px;
+    }
+
+    100% {
+        visibility: hidden;
+        top: -10%;
+    }
+}

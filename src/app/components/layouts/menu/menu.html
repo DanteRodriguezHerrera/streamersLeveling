@@ -1,0 +1,23 @@
+<div class="menu">
+    <section class="options">
+        <p routerLink="agenda">Agenda</p>
+        <p (click)="toggleRankingsSubmenu()">Rankings</p>
+        <p routerLink="groups">Grupo</p>
+        <p routerLink="live-streamers">Apoyo</p>
+    </section>
+
+    <section class="profile">
+        <div class="photo" (click)="toggleProfileSubmenu()"></div>
+    </section>
+</div>
+
+<div class="rankings">
+    <p routerLink="global-ranking">Global</p>
+    <p routerLink="group-ranking">Grupal</p>
+</div>
+
+<div class="profile-options">
+    <p routerLink="profile">Perfil</p>
+    <p routerLink="help">Ayuda</p>
+    <p>Aviso de <br> privacidad</p>
+</div>
