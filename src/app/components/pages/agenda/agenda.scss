@@ -1,0 +1,64 @@
+@mixin blue-leveling {
+    padding: 10px 15px;
+    background: rgb(255, 255, 255, 0.1);
+    border: 1px solid #4DD9FF;
+    color: #4DD9FF;
+    box-shadow: 0px 0px 10px rgba(173, 237, 255, 0.5);
+    border-radius: 6px;
+}
+
+.main {
+    color: #4DD9FF;
+    text-shadow: 0px 0px 20px rgba(173, 237, 255, 0.9);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: space-evenly;
+    width: 100%;
+    height: calc(100% - 50px);
+
+    .schedule-section {
+        display: flex;
+        justify-content: end;
+        width: 90%;
+
+        button {
+            font-size: 1.5rem;
+            cursor: pointer;
+            @include blue-leveling;
+        }
+    }
+
+    .available-hours {
+        height: 85%;
+        width: 100%;
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: space-around;
+
+        .display-day {
+            border: 1px solid #4DD9FF;
+            width: 15%;
+            text-align: center;
+            overflow-y: scroll;
+            border-radius: 6px;
+            scrollbar-width: none;
+
+            .day-of-the-week {
+                background: #1B1F2F;
+                border-bottom: 1px solid #4DD9FF;
+                padding: 10px 0;
+                position: sticky;
+                top: 0;
+            }
+
+            .hour-of-the-day {
+                h1 {
+                    margin: 15px;
+                    user-select: none;
+                    @include blue-leveling;
+                }
+            }
+        }
+    }
+}

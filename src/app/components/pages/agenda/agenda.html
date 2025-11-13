@@ -1,1 +1,20 @@
-<p>agenda works!</p>
+<div class="main">
+    <section class="schedule-section">
+        <button>Agendar</button>
+    </section>
+
+    <section class="available-hours">
+        @for (day of days; track $index) {
+        <div class="display-day">
+            <div class="day-of-the-week">
+                <h1>{{day}}</h1>
+            </div>
+            <div class="hour-of-the-day">
+                @for(hour of hours; track $index) {
+                <h1>{{hour}} : 00</h1>
+                }
+            </div>
+        </div>
+        }
+    </section>
+</div>
