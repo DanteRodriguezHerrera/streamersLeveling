@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Twitch } from '../../../core/services/twitch.service';
 import { tokenResponse, validationTokenResponse } from '../../../core/interfaces/twitch.interface';
+import { User, UserDTO, UserResponse } from '../../../core/interfaces/user.interface';
+import { UserService } from '../../../core/services/user.service';
 
 @Component({
   selector: 'app-login',
@@ -11,27 +13,46 @@ import { tokenResponse, validationTokenResponse } from '../../../core/interfaces
 })
 export class Login implements OnInit {
 
-  constructor(private route: ActivatedRoute, private twitchService: Twitch) { }
+  constructor(private route: ActivatedRoute, private router: Router, private twitchService: Twitch, private userService: UserService) { }
 
-  code: string = '';
-  userId: string = '';
-
-  ngOnInit(): void {
-    // this.route.queryParams.subscribe(params => {
-    //   this.code = params['code'];
-    // });
-
-    // this.getAuthorization();
-
-    // this.validatedToken();
+  newUserInfo: UserDTO = {
+    twitch_id: '',
+    role_id: '',
+    group_id: '',
+    access_token: '',
+    expires_in: '',
+    refresh_token: ''
   }
 
-  getAuthorization() {
+  user: User = {
+    user_id: '',
+    twitch_id: '',
+    role_id: '',
+    group_id: '',
+    access_token: '',
+    expires_in: '',
+    refresh_token: '',
+  }
+  
+  ngOnInit(): void {
 
-    this.twitchService.getTwitchToken(this.code).subscribe({
+    this.route.queryParams.subscribe(params => {
+      params['code'] ? this.getAuthorization(params['code']) : this.validatedToken();
+    });
+
+  }
+
+  getAuthorization(code: string) {
+
+    this.twitchService.getTwitchToken(code).subscribe({
       next: (res: tokenResponse) => {
-        console.log(res)
+        // console.log(res)
+        this.newUserInfo.access_token = res.access_token;
+        this.newUserInfo.refresh_token = res.refresh_token
+
         localStorage.setItem('twitchAuthToken', res.access_token)
+
+        this.validatedToken();
       },
       error: err => {
         console.log(err)
@@ -40,28 +61,51 @@ export class Login implements OnInit {
   }
 
   validatedToken() {
-    this.twitchService.validateTwitchToken(localStorage.getItem('twitchAuthToken')!).subscribe({
-      next: (res: validationTokenResponse) => {
+    if(localStorage.getItem('twitchAuthToken')) {
+      this.twitchService.validateTwitchToken(localStorage.getItem('twitchAuthToken')!).subscribe({
+        next: (validationResponse: validationTokenResponse) => {
+          // console.log(validationResponse)
+          this.userService.getUser(validationResponse.user_id).subscribe({
+            next: (userResponse: UserResponse) => {
+              // console.log(userResponse)
+  
+              if(userResponse.status == 204 && this.newUserInfo.access_token != '') {
+                this.newUserInfo.twitch_id = validationResponse.user_id;
+                this.newUserInfo.expires_in = validationResponse.expires_in;
+  
+                this.registerNewUser();
+              }
+
+              if(userResponse.status == 201) {
+                this.router.navigateByUrl("/agenda")
+              }
+            },
+            error: err => {
+              console.log(err)
+              console.log(err.status)
+            }
+          
+          })
+        },
+        error: err => {
+          console.log(err)
+          console.log(err.status)
+        }
+      })
+    }
+
+  }
+
+  registerNewUser() {
+    this.userService.registerUser(this.newUserInfo).subscribe({
+      next: (res: UserResponse) => {
         // console.log(res)
-        this.userId = res.user_id;
-        // this.getUserInfo();
+        this.router.navigateByUrl("/agenda")
       },
       error: err => {
         console.log(err)
       }
     })
   }
-
-  // Esto se llamara desde el back debido a CORS
-  // getUserInfo() {
-  //   this.twitchService.getTwitchUser(this.userId, localStorage.getItem('twitchAuthToken')!).subscribe({
-  //     next: (res: any) => {
-  //       console.log(res)
-  //     },
-  //     error: err => {
-  //       console.log(err)
-  //     }
-  //   })
-  // }
 
 }

@@ -14,7 +14,7 @@ export class Twitch {
 
     const getTokenParameters: tokenParameters = {
       client_id: 'asbp5fyz7toklrqthtkyk6k4i3w9xe',
-      client_secret: 'c4fgu5i4j8ctsi3w9crvp64z0j0fdd',
+      client_secret: 'o88mnh2sm5jh7rgvdwiejhwpae70u1',
       code: twitchCode,
       grant_type: 'authorization_code',
       redirect_uri: 'http://localhost:4200'
