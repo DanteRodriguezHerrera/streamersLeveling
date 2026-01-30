@@ -1,0 +1,18 @@
+.main-container {
+  display: flex;
+  height: calc(100% - 50px);
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  .embed-stream {
+    width: max(80%, 400px);
+    height: max(80%, 300px);
+  }
+
+  .embed-chat {
+    height: max(80%, 300px);
+    width: 20%;
+  }
+}
+
+

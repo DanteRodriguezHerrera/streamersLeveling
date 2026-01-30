@@ -22,6 +22,10 @@ export const routes: Routes = [
         loadComponent: () => import('./components/pages/live-streamers/live-streamers').then(ls => ls.LiveStreamers)
     },
     {
+        path: 'stream/:id',
+        loadComponent: () => import('./components/pages/stream/stream').then(s => s.Stream)
+    },
+    {
         path: 'profile',
         loadComponent: () => import('./components/pages/profile/profile').then(p => p.Profile)
     },
