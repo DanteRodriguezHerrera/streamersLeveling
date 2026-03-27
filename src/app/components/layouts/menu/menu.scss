@@ -7,13 +7,25 @@
     position: relative;
 
     .options {
-        width: 90%;
+        width: 85%;
         display: flex;
         justify-content: space-evenly;
         align-items: center;
 
         p {
             cursor: pointer;
+        }
+    }
+
+    .coins {
+        width: 5%;
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+
+        svg {
+            width: 30%;
+            color: #0695c0;
         }
     }
 
@@ -24,8 +36,8 @@
         align-items: center;
 
         .photo {
-            width: 35%;
-            height: 90%;
+            width: 45px;
+            height: 45px;
             border: 1px solid black;
             border-radius: 50%;
             cursor: pointer;

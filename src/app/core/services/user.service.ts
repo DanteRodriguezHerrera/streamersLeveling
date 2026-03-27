@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import { UserDTO, UserResponse } from '../interfaces/user.interface';
+import { UserDTO, UserResponse, UsersResponse } from '../interfaces/user.interface';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -13,15 +13,21 @@ export class UserService {
 
   BASE_URL = environment.apiUrl;
 
+  mana = signal(0);
+
   registerUser (newUser: UserDTO) : Observable<UserResponse> {
     return this.http.post<UserResponse>(this.BASE_URL + '/users', newUser);
   }
 
   getUser (user_id: string) : Observable<UserResponse> {
-    return this.http.get<UserResponse>(this.BASE_URL + '/users', {
-      params: {
-        user_id: user_id
-      }
-    })
+    return this.http.get<UserResponse>(this.BASE_URL + '/users/' + user_id);
+  }
+
+  getUsers() : Observable<UsersResponse> {
+    return this.http.get<UsersResponse>(this.BASE_URL + '/users');
+  }
+
+  updateUser (user_id: string, userNewInfo: any) : Observable<UserResponse> {
+    return this.http.patch<UserResponse>(this.BASE_URL + '/users/' + user_id, userNewInfo);
   }
 }

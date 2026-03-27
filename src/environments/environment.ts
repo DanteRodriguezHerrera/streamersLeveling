@@ -1,4 +1,5 @@
 export const environment = {
     production: true,
-    apiUrl: ''
+    apiUrl: 'https://airports-slightly-trend-yet.trycloudflare.com',
+    redirect_uri: 'https://streamers-leveling.netlify.app'
 };

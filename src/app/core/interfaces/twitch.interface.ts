@@ -19,5 +19,5 @@ export interface validationTokenResponse {
     login: string;
     scopes: any[];
     user_id: string;
-    expires_in: string;
+    expires_in: number;
 }

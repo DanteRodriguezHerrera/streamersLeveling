@@ -1,1 +1,42 @@
-<p>profile works!</p>
+<div class="main">
+
+    <section class="names">
+        Nombre de usuario de twitch
+    </section>
+    
+    <section class="names">
+        Nombre del canal
+    </section>
+    
+    <section class="coins-history">
+        Historial de monedas
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Monedas</th>
+                            <th>Razón</th>
+                            <th>Fecha</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for(moneyHistory of moneyHistoryList(); track $index) {
+                            <tr>
+                                <td>
+                                    {{moneyHistory.quantity}}
+                                </td>
+                                <td>
+                                    {{moneyHistory.reason}}
+                                </td>
+                                <td>
+                                    {{moneyHistory.date_money_history | date: 'dd/MM/yyyy hh:mm a'}}
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+        </div>
+    
+    </section>
+
+</div>

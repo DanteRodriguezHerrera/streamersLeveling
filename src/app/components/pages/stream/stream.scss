@@ -1,17 +1,21 @@
 .main-container {
   display: flex;
   height: calc(100% - 50px);
-  overflow-y: auto;
-  overflow-x: hidden;
+  flex-wrap: wrap;
+  color: white;
+  // overflow-y: auto;
+  // overflow-x: hidden;
 
   .embed-stream {
     width: max(80%, 400px);
     height: max(80%, 300px);
+    border: none;
   }
 
   .embed-chat {
     height: max(80%, 300px);
     width: 20%;
+    border: none;
   }
 }
 

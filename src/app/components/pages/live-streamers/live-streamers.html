@@ -3,9 +3,9 @@
 
     <section>
         <h2>Canales en vivo</h2>
-        @for (channel of [1, 1]; track $index) {
-        <div class="channels" routerLink="/stream/1" style="cursor: pointer">
-
+        @for (channel of liveChannels(); track $index) {
+        <div class="channels" routerLink="/stream/{{channel.channel_name}}" style="cursor: pointer">
+            {{channel.channel_name}}
         </div>
         }
     </section>

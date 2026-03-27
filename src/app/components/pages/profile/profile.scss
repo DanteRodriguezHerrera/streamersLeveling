@@ -1,0 +1,67 @@
+.main {
+    color: rgb(77, 217, 255);
+    display: flex;
+    flex-wrap: wrap;
+    height: calc(100% - 50px);
+    align-content: space-between;
+
+    section {
+        // border: white 1px solid;
+        width: 100%;
+        margin: 20px;
+    }
+
+    .names {
+        height: 10%;
+    }
+
+    .coins-history {
+        height: 60%;
+        // border: 1px solid white;
+
+        .table-scroll {
+            height: 90%;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            border: 1px solid rgb(77, 217, 255);
+            border-radius: 5px;
+
+            table {
+                width: 100%;
+                position: relative;
+                border-collapse: collapse;
+
+                th, td {
+                    height: min(50px, 50px);
+                    text-align: center;
+                }
+
+                thead {
+                    width: 100%;
+                    background: #1B1F2F;
+                    position: sticky;
+                    top: 2px;
+                    z-index: 2;
+                    border-bottom: 3px solid rgb(77, 217, 255);
+                    box-shadow: 0px 1px 15px 1px rgba(77, 217, 255, 0.5);
+                    
+                    th {
+                        width: 30%;
+                        z-index: 2;
+                    }
+                }
+                
+                tbody {
+                    margin-top: 50px;
+                    
+                    td {
+                        width: 30%;
+                        position: sticky;
+                        top: 2px;
+                        border-bottom: 1px solid rgb(77, 217, 255);
+                    }
+                }
+            }
+        }
+    }
+}

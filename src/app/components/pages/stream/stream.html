@@ -1,16 +1,13 @@
 <div class="main-container">
-  <iframe src="https://player.twitch.tv/?channel=manutegaming&parent=localhost"
-          class="embed-stream"
-          allowfullscreen
-  >
+  <iframe [src]="urlStream" class="embed-stream" allowfullscreen onclick="startWatchingStream()"> 
   </iframe>
 
-  <iframe
-    id="chat_embed"
-    src="https://www.twitch.tv/embed/manutegaming/chat?darkpopout&parent=localhost"
-    class="embed-chat"
-  >
+  <iframe [src]="urlChat" class="embed-chat" >
   </iframe>
+
+  <section>
+    Consejos
+  </section>
 </div>
 
 

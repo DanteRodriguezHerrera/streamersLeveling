@@ -19,8 +19,22 @@
 
     .schedule-section {
         display: flex;
-        justify-content: end;
+        justify-content: space-between;
         width: 90%;
+
+        .timeFormat {
+            display: flex;
+            align-items: center;
+            width: 40%;
+            font-size: 1.2rem;
+
+            input {
+                width: 25px;
+                height: 25px;
+                margin-right: 10px;
+            }
+
+        }
 
         button {
             font-size: 1.5rem;
@@ -50,15 +64,316 @@
                 padding: 10px 0;
                 position: sticky;
                 top: 0;
+                z-index: 2;
             }
 
             .hour-of-the-day {
-                h1 {
-                    margin: 15px;
-                    user-select: none;
+
+                .no-schedule, .schedule-one-hour, .schedule-two-hours {
                     @include blue-leveling;
+                    position: relative;
+
+                    .tooltiptext {
+                        visibility: hidden;
+                        width: 120px;
+                        background-color: #1B1F2F;
+                        border: 1px solid #00CFFF;
+                        color: #fff;
+                        text-align: center;
+                        border-radius: 6px;
+                        padding: 5px 0;
+                        position: absolute;
+                        z-index: 1;
+                        top: 120%;
+                        left: 50%;
+                        margin-left: -60px;
+                        
+                        &::after {
+                            content: "";
+                            position: absolute;
+                            bottom: 100%;
+                            left: 50%;
+                            margin-left: -5px;
+                            border-width: 5px;
+                            border-style: solid;
+                            border-color: transparent transparent #00CFFF transparent;
+                            visibility: hidden;
+                        }
+                    }
+
+                    &:hover .tooltiptext, &:hover .tooltiptext::after {
+                        visibility: visible;
+                    }
+
+                }
+
+                .no-schedule {
+                    margin: 15px;
+
+                    svg {
+                        display: none;
+                    }
+                }
+
+                @mixin with-schedule {
+                    display: flex;
+                    flex-wrap: nowrap;
+                    align-items: center;
+                    margin: 15px;
+                }
+
+                .schedule-one-hour {
+                    @include with-schedule;                    
+
+                    svg {
+                        width: 25%;
+
+                        &:nth-child(3) {
+                            display: none;
+                        }
+                    }
+                    
+                    h1 {
+                        width: 50%;
+                    }
+                }
+
+                .schedule-two-hours {
+                    @include with-schedule;                    
+                    justify-content: space-around;
+                }
+
+                h1 {
+                    user-select: none;
+                }
+
+
+
+            }
+        }
+    }
+}
+
+dialog {
+    animation: fade-out 0.3s ease-out;
+    top: 20%;
+    left: 25%;
+    width: 50%;
+    height: 60%;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    background: rgb(255, 255, 255, 0);
+
+    &:open {
+        animation: fade-in 0.3s ease-out;
+    }
+
+    .agenda {
+        width: 100%;
+        height: calc(100% - 30px);
+        border-top: 15px solid #4DD9FF;
+        border-bottom: 15px solid #4DD9FF;
+        border-radius: 6px;
+        display: flex;
+        justify-content: center;
+        text-align: center;
+        color: #00CFFF;
+
+        .content-card {
+            width: 95%;
+            height: 100%;
+            border: 1px solid #4dd9ff;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-content: space-evenly;
+            text-shadow: 0px 0px 20px rgba(173, 237, 255, 0.9);
+            background: #1B1F2F;
+
+            h1, h3 {
+                width: 100%;
+            }
+
+            .day-selection {
+                display: flex;
+                justify-content: space-evenly;
+                width: 100%;
+
+                .day-selector {
+                    width: 20%;
+                    
+                    select {
+                        width: 100%;
+                        margin-top: 10px;
+                        font-size: 1.5rem;
+                    }
+                }
+
+                fieldset {
+                    width: 20%;
+                    border: #00CFFF 1px solid;
+                    text-align: center;
+
+                    legend {
+                        padding: 0 10px;
+                    }
+
+                    p {
+                        padding: 5px 0;
+                    }
+                }
+            }
+
+            button {
+                font-size: x-large;
+                border-radius: 6px;
+            }
+
+            .hour-buttons {
+                padding: 0 10px;
+
+                .hour-button {
+                    margin: 5px;
+                    padding: 10px 25px;
+                    cursor: pointer;
+                    background: #00CFFF;
+                    color: #00CFFF; 
+                    border: none;
+                    position: relative;
+                    z-index: 2;
+                    overflow: hidden;
+                    
+                    &:hover, &.selected {
+                        background: none;
+                    }
+
+                    // &.selected {
+                    //     background: none;
+                    // }
+
+                    &::after,
+                    &::before {
+                        content: "";
+                        position: absolute;
+                        height: 150%;
+                        width: 150%;
+                        top: 50%;
+                        left: 50%;
+                        z-index: -1;
+                        transform: translate(-50%, -50%);
+                    }
+
+                    &:hover::before, &.selected::before {
+                        background: conic-gradient(white 20deg, #00CFFF 120deg);
+                        animation: rotate 4s infinite linear;
+                    }
+
+                    &::after {
+                        background: #1B1F2F;
+                        height: 95%;
+                        width: 95%;
+                        border-radius: 6px;
+                    }
+
+                    @keyframes rotate {
+                        from {
+                            transform: translate(-50%, -50%) rotate(0deg);
+                        }
+                        to {
+                            transform: translate(-50%, -50%) rotate(360deg);
+                        }
+                    }
+                }
+
+                
+            }
+            
+            .action-buttons {
+                width: 100%;
+                display: flex;
+                justify-content: space-evenly;
+                
+                .confirm-button {
+                    background: linear-gradient(90deg, #5A2EA6, #4DD9FF, #5A2EA6 5%, );
+                    background-size: 400% 400%;
+                    animation: lightLeftToRight 10s ease infinite;
+                    cursor: pointer;
+                    padding: 1% 5%;
+                    color: white;
+
+                    &:disabled {
+                        background: rgb(90, 46, 166, 0.5);
+                        cursor: default;
+                    }
+                }
+            }
+
+
+            @keyframes lightLeftToRight {
+                0% {
+                    background-position: 400% 0%;
+                }
+
+                25% {
+                    background-position: 300% 0%;
+                }
+
+                50% {
+                    background-position: 200% 0%;
+                }
+
+                75% {
+                    background-position: 100% 0%;
+                }
+
+                100% {
+                    background-position: 0% 0%;
                 }
             }
         }
+    }
+}
+
+@keyframes fade-in {
+    0% {
+        opacity: 0;
+        transform: scaleY(0);
+        display: none;
+    }
+
+    100% {
+        opacity: 1;
+        transform: scaleY(1);
+        display: block;
+    }
+}
+
+@keyframes fade-out {
+    0% {
+        opacity: 1;
+        transform: scaleY(1);
+        display: block;
+    }
+
+    100% {
+        opacity: 0;
+        transform: scaleY(0);
+        display: none;
+    }
+}
+
+dialog:open::backdrop {
+    background-color: black;
+    animation: backdrop-fade-in 0.7s ease-out forwards;
+}
+
+@keyframes backdrop-fade-in {
+    0% {
+    opacity: 0;
+    }
+
+    100% {
+    opacity: 0.25;
     }
 }

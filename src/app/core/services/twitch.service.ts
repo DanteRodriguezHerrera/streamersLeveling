@@ -2,11 +2,12 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { tokenParameters, tokenResponse, validationTokenResponse } from '../interfaces/twitch.interface';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
-export class Twitch {
+export class TwitchService {
 
   constructor(private http: HttpClient) { }
 
@@ -17,7 +18,7 @@ export class Twitch {
       client_secret: 'o88mnh2sm5jh7rgvdwiejhwpae70u1',
       code: twitchCode,
       grant_type: 'authorization_code',
-      redirect_uri: 'http://localhost:4200'
+      redirect_uri: environment.redirect_uri
     }
 
     return this.http.post<tokenResponse>('https://id.twitch.tv/oauth2/token', getTokenParameters)

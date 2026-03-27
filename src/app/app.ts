@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { Menu } from "./components/layouts/menu/menu";
 import { filter } from 'rxjs';
@@ -12,7 +12,7 @@ import { filter } from 'rxjs';
 export class App implements OnInit {
   protected readonly title = signal('streamersLeveling');
 
-  constructor(private route: Router) { }
+  private route = inject(Router);
 
   urlActual: string = '';
   ngOnInit(): void {
