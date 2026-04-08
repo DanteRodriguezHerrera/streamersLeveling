@@ -1,1 +1,34 @@
-<p>groups works!</p>
+<div class="main-groups">
+    
+    <section class="groups">
+        @for (group of [1,1,1,1,1]; track $index; let i = $index) {
+            <div class="group-card">
+
+                <h1>
+                    Grupo {{i}}
+                </h1>
+
+                <div class="group-members">
+                    @for (streamer of [1,1,1,1,1]; track $index; let j = $index) {
+                        <div class="member">
+                            <div>
+                                {{j + 1}} - Nombre
+                            </div>
+                            
+                            <div>
+                                <button>
+                                    Editar
+                                </button>
+            
+                                <button>
+                                    Borrar
+                                </button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </section>
+
+</div>
