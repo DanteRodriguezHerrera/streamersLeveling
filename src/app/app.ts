@@ -14,13 +14,13 @@ export class App implements OnInit {
 
   private route = inject(Router);
 
-  urlActual: string = '';
+  isLogin: boolean = true;
   ngOnInit(): void {
 
     this.route.events
       .pipe(filter(event => event instanceof NavigationEnd))
-      .subscribe((event: any) => {
-        this.urlActual = event.urlAfterRedirects;
+      .subscribe((event: NavigationEnd) => {
+        this.isLogin = event.urlAfterRedirects.includes('login');
       });
   }
 }

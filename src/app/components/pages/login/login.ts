@@ -92,7 +92,7 @@ export class Login implements OnInit {
               }
 
               if(userResponse.status == 201) {
-                // this.router.navigateByUrl("/agenda")
+                this.router.navigateByUrl("/agenda")
               }
             },
             error: err => {
@@ -115,7 +115,7 @@ export class Login implements OnInit {
     this.userService.registerUser(this.newUserInfo).subscribe({
       next: (res: UserResponse) => {
         // console.log(res.data)
-        // this.router.navigateByUrl("/agenda")
+        this.router.navigateByUrl("/agenda")
 
         localStorage.setItem('user', res.data.user_id);
       },
