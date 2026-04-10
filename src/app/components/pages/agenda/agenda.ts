@@ -71,20 +71,10 @@ export class Agenda implements OnInit {
     hour_id: ''
   }
 
-
   ngOnInit(): void {
     this.getScheduledHours();
     this.getDays();
     this.getHours();
-
-    
-
-    // console.log(this.mondayStreamers)
-    // console.log(this.tuesdayStreamers)
-    // console.log(this.wednesdayStreamers)
-    // console.log(this.thursdayStreamers)
-    // console.log(this.fridayStreamers)
-    // console.log(this.saturdayStreamers)
   }
 
   fillMaps(hour:string, dayMap: Map<string, number>, dayStreamersMap: Map<string, any[]>) {

@@ -27,6 +27,10 @@ export class UserService {
     return this.http.get<UsersResponse>(this.BASE_URL + '/users');
   }
 
+  getUsersByGroup(group_id: string | null) : Observable<UsersResponse> {
+    return this.http.get<UsersResponse>(this.BASE_URL + '/users/byGroup/' + group_id);
+  }
+
   updateUser (user_id: string, userNewInfo: any) : Observable<UserResponse> {
     return this.http.patch<UserResponse>(this.BASE_URL + '/users/' + user_id, userNewInfo);
   }
