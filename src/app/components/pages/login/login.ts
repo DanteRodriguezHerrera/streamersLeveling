@@ -19,7 +19,9 @@ export class Login implements OnInit {
   private twitchService = inject(TwitchService);
   private userService = inject(UserService);
 
-  redirect_uri: string = environment.redirect_uri
+  redirect_uri: string = environment.redirect_uri;
+
+  userExists: boolean = false;
 
   newUserInfo: UserDTO = {
     twitch_id: '',
@@ -45,26 +47,46 @@ export class Login implements OnInit {
   }
   
   ngOnInit(): void {
+    this.verifyUserExists()
+  }
 
-    console.log(this.redirect_uri)
+  verifyUserExists() {
 
-    this.route.queryParams.subscribe(params => {
-      params['code'] ? this.getAuthorization(params['code']) : this.validatedToken();
-    });
+    const userId = localStorage.getItem('user');
 
+    if(userId !== null) {
+      this.userService.getUser(userId).subscribe({
+        next: (res: UserResponse) => {
+          if(res.status === 201) {
+            this.userExists = true;
+            this.validatedToken(res.data.access_token, res.data.refresh_token)
+          }
+          
+          if(res.status === 204) {
+            localStorage.clear()
+          }
+        },
+        error: err => {
+          console.log(err)
+        }
+      })
+    }
+    else {
+      this.route.queryParams.subscribe(params => {
+        if(params['code'] !== undefined){
+          this.getAuthorization(params['code'])
+        }
+      })
+    }
   }
 
   getAuthorization(code: string) {
-
     this.twitchService.getTwitchToken(code).subscribe({
       next: (res: tokenResponse) => {
-        console.log(res)
         this.newUserInfo.access_token = res.access_token;
         this.newUserInfo.refresh_token = res.refresh_token
 
-        localStorage.setItem('twitchAuthToken', res.access_token)
-
-        this.validatedToken();
+        this.validatedToken(res.access_token);
       },
       error: err => {
         console.log(err)
@@ -72,52 +94,44 @@ export class Login implements OnInit {
     })
   }
 
-  validatedToken() {
-    if(localStorage.getItem('twitchAuthToken')) {
-      this.twitchService.validateTwitchToken(localStorage.getItem('twitchAuthToken')!).subscribe({
-        next: (validationResponse: validationTokenResponse) => {
-          console.log(validationResponse)
-          this.userService.getUser(validationResponse.user_id).subscribe({
-            next: (userResponse: UserResponse) => {
-              // console.log(userResponse)
-  
-              if(userResponse.status == 204 && this.newUserInfo.access_token != '') {
-                this.newUserInfo.twitch_id = validationResponse.user_id;
-                this.newUserInfo.expires_in = validationResponse.expires_in;
-                this.newUserInfo.channel_name = validationResponse.login;
-
-                localStorage.setItem('channel_name', validationResponse.login)
-  
-                this.registerNewUser();
-              }
-
-              if(userResponse.status == 201) {
-                this.router.navigateByUrl("/agenda")
-              }
-            },
-            error: err => {
-              console.log(err)
-              console.log(err.status)
-            }
-          
-          })
-        },
-        error: err => {
-          console.log(err)
-          console.log(err.status)
+  validatedToken(twitchToken: string, refreshToken: string = '') {
+    this.twitchService.validateTwitchToken(twitchToken).subscribe({
+      next: (res: validationTokenResponse) => {       
+        if(this.userExists) {
+          this.router.navigateByUrl("/agenda")
         }
-      })
-    }
-
+        else {
+          this.newUserInfo.twitch_id = res.user_id;
+          this.newUserInfo.expires_in = res.expires_in;
+          this.newUserInfo.channel_name = res.login;
+          this.registerNewUser()
+        }
+      },
+      error: () => {        
+        this.refreshNewToken(refreshToken)
+      }
+    })
   }
 
   registerNewUser() {
     this.userService.registerUser(this.newUserInfo).subscribe({
       next: (res: UserResponse) => {
-        // console.log(res.data)
         this.router.navigateByUrl("/agenda")
 
         localStorage.setItem('user', res.data.user_id);
+        localStorage.setItem('twitchAuthToken', this.newUserInfo.access_token)
+      },
+      error: err => {
+        console.log(err)
+      }
+    })
+  }
+
+  refreshNewToken(refreshToken: string) {
+    this.twitchService.refreshTwitchToken(refreshToken).subscribe({
+      next: (res: tokenResponse) => {
+        localStorage.setItem('twitchAuthToken', res.access_token)
+        this.validatedToken(res.access_token)
       },
       error: err => {
         console.log(err)
