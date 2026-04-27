@@ -1,7 +1,10 @@
-import { Component, ElementRef, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { jwtDecode } from 'jwt-decode';
 import { UserService } from '../../../core/services/user.service';
 import { ClickOutsideDirective } from '../../../core/directives/click-outside';
+import { TokenPayload } from '../../../core/interfaces/token.interface';
+import { UserResponse } from '../../../core/interfaces/user.interface';
 
 @Component({
   selector: 'app-menu',
@@ -16,6 +19,11 @@ export class Menu implements OnInit {
   refreshTime: number = 30 * 60000; // mili segundos a minutos
 
   mana = this.userService.mana;
+
+  decoded: TokenPayload = {
+    role: '',
+    iat: 0
+  }
 
   ngOnInit(): void {
     
@@ -58,8 +66,13 @@ export class Menu implements OnInit {
   
   getUser() {
     this.userService.getUser(localStorage.getItem('user')!).subscribe({
-      next: (res: any) => {
+      next: (res: UserResponse) => {
         this.userService.mana.set(res.data.actual_money);
+        if(res.jwt_token){
+          this.decoded = jwtDecode<TokenPayload>(res.jwt_token)
+          localStorage.setItem("jwtToken", res.jwt_token)
+        }
+
       },
       error: err => {
         console.log(err)

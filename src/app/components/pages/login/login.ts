@@ -59,7 +59,12 @@ export class Login implements OnInit {
         next: (res: UserResponse) => {
           if(res.status === 201) {
             this.userExists = true;
-            this.validatedToken(res.data.access_token, res.data.refresh_token)
+            this.validatedToken(res.data.access_token, res.data.refresh_token);
+
+            const jwtToken = localStorage.getItem('jwtToken');
+            if(jwtToken !== null) {
+              localStorage.setItem("jwtToken", jwtToken)
+            }
           }
           
           if(res.status === 204) {
@@ -119,7 +124,10 @@ export class Login implements OnInit {
         this.router.navigateByUrl("/agenda")
 
         localStorage.setItem('user', res.data.user_id);
-        localStorage.setItem('twitchAuthToken', this.newUserInfo.access_token)
+        localStorage.setItem('twitchAuthToken', this.newUserInfo.access_token);
+        if(res.jwt_token){
+          localStorage.setItem('jwtToken', res.jwt_token)
+        }
       },
       error: err => {
         console.log(err)

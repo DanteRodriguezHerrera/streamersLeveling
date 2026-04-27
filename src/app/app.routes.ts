@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { superAdminGuard } from './core/auth/superadmin.guard';
 
 export const routes: Routes = [
     {
@@ -16,7 +17,8 @@ export const routes: Routes = [
     },
     {
         path: 'groups',
-        loadComponent: () => import('./components/pages/groups/groups').then(g => g.Groups)
+        loadComponent: () => import('./components/pages/groups/groups').then(g => g.Groups),
+        canActivate: [superAdminGuard]
     },
     {
         path: 'help',
@@ -41,5 +43,10 @@ export const routes: Routes = [
     {
         path: 'group-ranking',
         loadComponent: () => import('./components/pages/rankings/group-ranking/group-ranking').then(grr => grr.GroupRanking)
+    },
+    {
+        path: 'users',
+        loadComponent: () => import('./components/pages/users/users').then(u => u.Users),
+        canActivate: [superAdminGuard]
     }
 ];

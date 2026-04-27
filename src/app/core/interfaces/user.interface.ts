@@ -25,6 +25,7 @@ export interface UserResponse {
     status: number;
     message: string;
     data: User;
+    jwt_token?: string;
 }
 
 export interface UsersResponse {

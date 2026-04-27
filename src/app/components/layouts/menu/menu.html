@@ -2,8 +2,11 @@
     <section class="options">
         <p routerLink="agenda" (click)="closeSubmenu()">Agenda</p>
         <p (click)="toggleSubmenu('rankings')">Rankings</p>
-        <p routerLink="groups" (click)="closeSubmenu()">Grupo</p>
         <p routerLink="live-streamers" (click)="closeSubmenu()">Apoyo</p>
+        @if (decoded.role === 'superadmin') {
+            <p routerLink="groups" (click)="closeSubmenu()">Grupos</p>
+            <p routerLink="users">Usuarios</p>
+        }
     </section>
 
     <section class="coins">
