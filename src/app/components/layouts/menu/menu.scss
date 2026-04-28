@@ -3,7 +3,7 @@
     height: 50px;
     display: flex;
     font-size: 1.5rem;
-    z-index: 2;
+    z-index: 99;
     position: relative;
 
     .options {
@@ -61,13 +61,20 @@
 
 .rankings {
     width: 10%;
-    left: 32%;
+    left: 40%;
+    @include subMenu();
+}
+
+.rankings-superadmin {
+    width: 10%;
+    left: 25%;
     @include subMenu();
 }
 
 .profile-options {
     right: 1%;
-    @include subMenu()
+    @include subMenu();
+    z-index: 98;
 }
 
 .show {

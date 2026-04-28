@@ -22,7 +22,8 @@ export class Menu implements OnInit {
 
   decoded: TokenPayload = {
     role: '',
-    iat: 0
+    group: '',
+    iat: 0,
   }
 
   ngOnInit(): void {
@@ -71,6 +72,12 @@ export class Menu implements OnInit {
         if(res.jwt_token){
           this.decoded = jwtDecode<TokenPayload>(res.jwt_token)
           localStorage.setItem("jwtToken", res.jwt_token)
+
+          const submenu = document.getElementsByClassName("rankings");
+
+          if(this.decoded.role === 'superadmin') {
+            submenu[0].classList.add("rankings-superadmin")
+          }
         }
 
       },

@@ -1,0 +1,50 @@
+.main-ranking {
+    width: 100%;
+    height: calc(100% - 50px);
+    color: #4DD9FF;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .ranking {
+        border: 1px solid #4DD9FF;
+        width: 90%;
+        height: 90%;
+        border-radius: 6px;
+        text-align: center;
+        font-size: xx-large;
+        overflow-y: auto;
+        scrollbar-color: #4DD9FF transparent ;
+
+        legend {
+            padding: 5px 10px;
+            border: 1px solid #4DD9FF;
+            border-radius: 6px;
+            color: #00CFFF;
+            margin-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            text-align: center;
+            border-collapse: separate;
+            border-spacing: 0;
+            position: relative;
+            
+            th, td {
+                border-bottom: 1px solid #4DD9FF;
+                padding: 10px;
+
+                &:nth-child(odd) {
+                    width: 25%;
+                }
+            }
+
+            th {
+                position: sticky;
+                top: 0;
+                background: #1B1F2F;
+            }
+        }
+    }
+}

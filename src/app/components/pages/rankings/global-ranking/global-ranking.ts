@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { User, UsersResponse } from '../../../../core/interfaces/user.interface';
+import { UserService } from '../../../../core/services/user.service';
 
 @Component({
   selector: 'app-global-ranking',
@@ -6,6 +8,29 @@ import { Component } from '@angular/core';
   templateUrl: './global-ranking.html',
   styleUrl: './global-ranking.scss',
 })
-export class GlobalRanking {
+export class GlobalRanking implements OnInit {
 
+  private usersService = inject(UserService);
+
+  isLoading = signal<boolean>(true)
+
+  ranking: User[] = [];
+
+  ngOnInit(): void {
+    
+    this.getRanking();
+  }
+
+  getRanking() {
+
+    this.usersService.getUsers().subscribe({
+      next: (res: UsersResponse) => {
+        this.ranking = res.data
+        this.isLoading.update(value => !value)
+      },
+      error: err => {
+        console.log(err)
+      }
+    })
+  }
 }

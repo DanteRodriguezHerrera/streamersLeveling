@@ -146,7 +146,8 @@ dialog {
         .content-card {
             width: 95%;
             height: 100%;
-            border: 1px solid #4dd9ff;
+            border-left: 1px solid #4dd9ff;
+            border-right: 1px solid #4dd9ff;
             display: flex;
             flex-wrap: wrap;
             justify-content: center;

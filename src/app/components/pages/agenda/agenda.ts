@@ -8,10 +8,13 @@ import { Day, DaysResponse } from '../../../core/interfaces/day.interface';
 import { HourService } from '../../../core/services/hour.service';
 import { Hour, HoursResponse } from '../../../core/interfaces/hour.interface';
 import { UserService } from '../../../core/services/user.service';
+import { TokenPayload } from '../../../core/interfaces/token.interface';
+import { jwtDecode } from 'jwt-decode';
+import { NoGroup } from '../../layouts/no-group/no-group';
 
 @Component({
   selector: 'app-agenda',
-  imports: [TimeFormatPipe, FormsModule],
+  imports: [TimeFormatPipe, FormsModule, NoGroup],
   templateUrl: './agenda.html',
   styleUrl: './agenda.scss',
 })
@@ -71,10 +74,25 @@ export class Agenda implements OnInit {
     hour_id: ''
   }
 
+  decoded: TokenPayload = {
+    role: '',
+    group: '',
+    iat: 0
+  }
+
   ngOnInit(): void {
-    this.getScheduledHours();
-    this.getDays();
-    this.getHours();
+
+    const token = localStorage.getItem("jwtToken");
+
+    if(token) {
+      this.decoded = jwtDecode<TokenPayload>(token);
+      
+      if(this.decoded.group !== null) {
+        this.getScheduledHours();
+        this.getDays();
+        this.getHours();
+      }
+    }
   }
 
   fillMaps(hour:string, dayMap: Map<string, number>, dayStreamersMap: Map<string, any[]>) {

@@ -1,1 +1,56 @@
-<p>group-ranking works!</p>
+@if(!isLoading()) {
+    <div class="main-ranking">
+        <fieldset class="ranking">
+            <legend>Ranking grupal</legend>
+
+            @if(ranking.length > 0) {
+                <table>
+                    <tr>
+                        <th>Rango</th>
+                        <th>Streamer</th>
+                        <th>Mana acumulado</th>
+                        @if(decoded.role !== 'streamer') {
+                            <th></th>
+                        }
+                    </tr>
+                    @for (rank of ranking; track $index; let i = $index) {
+                        <tr>
+                            <td>{{i + 1}}</td>
+                            <td>{{rank.channel_name}}</td>
+                            <td>{{rank.actual_money}}</td>
+                            @if (decoded.role !== 'streamer') {
+                                <td>
+                                    <button command="show-modal" commandfor="my-dialog">
+                                        <i class="bi bi-trash" (click)="getExpulsionUser(rank.user_id)"></i>
+                                    </button>
+                                </td>
+                            }
+                        </tr>
+                    }
+                </table>
+            }
+            @else {
+                <app-no-group />
+            }
+        </fieldset>
+    </div>
+}
+@else {
+    <p style="color: white;">
+        Cargando...
+    </p>
+}
+
+<dialog id="my-dialog">
+    <div class="expulsion">
+        <div class="content-card">
+            <h1>
+                ¿Estas seguro de expulsar a este miembro del grupo?
+            </h1>
+            <div class="action-buttons">
+                <button class="confirm-button" command="close" commandfor="my-dialog">Cancelar</button>
+                <button class="confirm-button" command="close" commandfor="my-dialog" (click)="confirmExpulsion()">Confirmar</button>
+            </div>
+        </div>
+    </div>
+</dialog>

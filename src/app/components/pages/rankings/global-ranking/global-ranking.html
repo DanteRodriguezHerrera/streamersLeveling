@@ -1,1 +1,28 @@
-<p>global-ranking works!</p>
+@if(!isLoading()) {
+    <div class="main-ranking">
+
+        <fieldset class="ranking">
+            <legend>Ranking global</legend>
+            <table>
+                <tr>
+                    <th>Rango</th>
+                    <th>Streamer</th>
+                    <th>Mana acumulado</th>
+                </tr>
+                @for (rank of ranking; track $index; let i = $index) {
+                    <tr>
+                        <td>{{i + 1}}</td>
+                        <td>{{rank.channel_name}}</td>
+                        <td>{{rank.actual_money}}</td>
+                    </tr>
+                }
+            </table>
+        </fieldset>
+    
+    </div>
+}
+@else {
+    <p style="color: white;">
+        Cargando...
+    </p>
+}
