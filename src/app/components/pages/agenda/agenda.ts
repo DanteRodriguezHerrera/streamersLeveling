@@ -28,10 +28,10 @@ export class Agenda implements OnInit {
   days = new Map<string, any[]>([
     ["Lunes", []],
     ["Martes", []],
-    ["Miercoles", []],
+    ["Miércoles", []],
     ["Jueves", []],
     ["Viernes", []],
-    ["Sabado", []],
+    ["Sábado", []],
   ]);
 
   daysOptions: Day[] = [];
@@ -122,10 +122,10 @@ export class Agenda implements OnInit {
       next: (res: any) => {
         this.countScheduledHours(this.monday, res.monday, "Lunes", this.mondayStreamers);
         this.countScheduledHours(this.tuesday, res.tuesday, "Martes", this.tuesdayStreamers);
-        this.countScheduledHours(this.wednesday, res.wednesday, "Miercoles", this.wednesdayStreamers);
+        this.countScheduledHours(this.wednesday, res.wednesday, "Miércoles", this.wednesdayStreamers);
         this.countScheduledHours(this.thursday, res.thursday, "Jueves", this.thursdayStreamers);
         this.countScheduledHours(this.friday, res.friday, "Viernes", this.fridayStreamers);
-        this.countScheduledHours(this.saturday, res.saturday, "Sabado", this.saturdayStreamers);
+        this.countScheduledHours(this.saturday, res.saturday, "Sábado", this.saturdayStreamers);
 
         this.usersTooltips = [this.mondayStreamers, this.tuesdayStreamers, this.wednesdayStreamers, this.thursdayStreamers, this.fridayStreamers, this.saturdayStreamers];
         

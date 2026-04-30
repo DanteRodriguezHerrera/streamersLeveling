@@ -39,7 +39,6 @@ export class GroupRanking {
 
     if(token){
       this.decoded = jwtDecode<TokenPayload>(token);
-      console.log(this.decoded)
       this.usersService.getUsersByGroup(this.decoded.group).subscribe({
         next: (res: UsersResponse) => {
           this.ranking = res.data

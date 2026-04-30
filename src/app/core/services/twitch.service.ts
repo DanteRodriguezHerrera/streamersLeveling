@@ -4,6 +4,7 @@ import { tokenResponse, validationTokenResponse } from '../interfaces/twitch.int
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { CACHING_ENABLED } from '../auth/authorization.interceptor';
+import { UserTwitchInfoResponse } from '../interfaces/user.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -28,6 +29,15 @@ export class TwitchService {
 
   refreshTwitchToken(twitchRefreshToken: string): Observable<tokenResponse> {
     return this.http.get<tokenResponse>(this.BASE_URL + '/twitch/refresh/' + twitchRefreshToken)
+  }
+
+  getUsersInfo(twitchToken: string, users: string[]) : Observable<UserTwitchInfoResponse> {
+    const headers = {
+      Authorization: 'Bearer ' + twitchToken,
+      "Client-Id": "asbp5fyz7toklrqthtkyk6k4i3w9xe"
+    }
+
+    return this.http.post<UserTwitchInfoResponse>(this.BASE_URL + '/twitch/users/' + twitchToken , { headers: headers, context: new HttpContext().set(CACHING_ENABLED, false), users })
   }
 
 }

@@ -1,10 +1,11 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
 import { UserService } from '../../../core/services/user.service';
 import { ClickOutsideDirective } from '../../../core/directives/click-outside';
 import { TokenPayload } from '../../../core/interfaces/token.interface';
-import { UserResponse } from '../../../core/interfaces/user.interface';
+import { UserResponse, UserTwitchInfoResponse } from '../../../core/interfaces/user.interface';
+import { TwitchService } from '../../../core/services/twitch.service';
 
 @Component({
   selector: 'app-menu',
@@ -14,7 +15,8 @@ import { UserResponse } from '../../../core/interfaces/user.interface';
 })
 export class Menu implements OnInit {
 
-  private userService = inject(UserService)
+  private userService = inject(UserService);
+  private twitchService = inject(TwitchService);
 
   refreshTime: number = 30 * 60000; // mili segundos a minutos
 
@@ -25,6 +27,8 @@ export class Menu implements OnInit {
     group: '',
     iat: 0,
   }
+
+  profileImage = signal<string>('');
 
   ngOnInit(): void {
     
@@ -78,6 +82,18 @@ export class Menu implements OnInit {
           if(this.decoded.role === 'superadmin') {
             submenu[0].classList.add("rankings-superadmin")
           }
+        }
+
+        const twitchToken = localStorage.getItem('twitchAuthToken');
+        if(twitchToken) {
+          this.twitchService.getUsersInfo(twitchToken, [res.data.channel_name]).subscribe({
+            next: (res: UserTwitchInfoResponse) => {
+              this.profileImage.set(res.data[0].profile_image_url);
+            },
+            error: err => {
+              console.log(err)
+            }
+          })
         }
 
       },

@@ -33,3 +33,20 @@ export interface UsersResponse {
     message: string;
     data: User[];
 }
+
+export interface UserTwitchInfoResponse {
+    data: UserTwitchInfo[]
+}
+
+export interface UserTwitchInfo {
+    broadcaster_type: string,
+    created_at: string,
+    description: string,
+    display_name: string,
+    id: string,
+    login: string,
+    offline_image_url: string,
+    profile_image_url: string,
+    type: string,
+    view_count: number,
+}
