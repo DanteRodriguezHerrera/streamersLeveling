@@ -1,3 +1,6 @@
+import { IGroup } from "./groups.interface";
+import { IRole } from "./role.interface";
+
 export interface User {
     user_id: string;
     twitch_id: string;
@@ -8,6 +11,8 @@ export interface User {
     refresh_token: string;
     actual_money: number;
     channel_name: string;
+    group: IGroup;
+    role: IRole
 }
 
 export interface UserDTO {

@@ -1,1 +1,93 @@
-<p>users works!</p>
+@if(!isLoading()) {
+    <div class="main-ranking">
+
+        <fieldset class="ranking">
+            <legend>Gestión de usuarios</legend>
+            <table>
+                <tr>
+                    <th>Rango</th>
+                    <th>Grupo</th>
+                    <th>Streamer</th>
+                    <th>Rol</th>
+                    <th>Mana acumulado</th>
+                    @if (decoded.role === 'superadmin') {
+                        <th></th>
+                    }
+                </tr>
+                @for (user of users; track $index; let i = $index) {
+                    <tr>
+                        <td>{{i + 1}}</td>
+                        <td>{{user.group.group_name}}</td>
+                        <td>{{user.channel_name}}</td>
+                        <td>{{user.role.role_name}}</td>
+                        <td>{{user.actual_money}}</td>
+                        @if (decoded.role === 'superadmin') {
+                            <td>
+                                <button command="show-modal" commandfor="my-dialog">
+                                    <i class="bi bi-pencil" (click)="getUserInfo(user)"></i>
+                                </button>
+                            </td>
+                        }
+                    </tr>
+                }
+            </table>
+        </fieldset>
+    
+    </div>
+}
+@else {
+    <p style="color: white;">
+        Cargando...
+    </p>
+}
+
+<dialog id="my-dialog">
+    <div class="users-edition">
+        <div class="content-card">
+            <h1>
+                Agendar hora de apoyo
+            </h1>
+
+            <div class="selectors">
+                <div class="selector">
+                    <h2>
+                        Cambio de grupo
+                    </h2>
+                    <p>
+                        Grupo actual: {{selectedUser.group.group_name}}
+                    </p>
+        
+                    <select [(ngModel)]="selectedGroup">
+                        @for (group of groups; track $index;) {
+                            <option [ngValue]="group.group_id">{{group.group_name}}</option>
+                        }
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="selectors">
+                <div class="selector">
+                    <h2>
+                        Cambio de rol
+                    </h2>
+                    <p>
+                        Rol actual: {{selectedUser.role.role_name}}
+                    </p>
+        
+                    <select [(ngModel)]="selectedRol">
+                        @for (role of roles; track $index;) {
+                            <option [ngValue]="role.role_id">{{role.role_name}}</option>
+                        }
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="action-buttons">
+                <button class="confirm-button" command="close" commandfor="my-dialog" (click)="clearUserSelected()">Cancelar</button>
+                <button class="confirm-button" command="close" commandfor="my-dialog" (click)="checkUserEdition()">Confirmar</button>
+            </div>
+        </div>
+    </div>
+</dialog>

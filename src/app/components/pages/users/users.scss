@@ -1,0 +1,231 @@
+.main-ranking {
+    width: 100%;
+    height: calc(100% - 50px);
+    color: #4DD9FF;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .ranking {
+        border: 1px solid #4DD9FF;
+        width: 90%;
+        height: 90%;
+        border-radius: 6px;
+        text-align: center;
+        font-size: xx-large;
+        overflow-y: auto;
+        scrollbar-color: #4DD9FF transparent ;
+
+        legend {
+            padding: 5px 10px;
+            border: 1px solid #4DD9FF;
+            border-radius: 6px;
+            color: #00CFFF;
+            margin-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            text-align: center;
+            border-collapse: separate;
+            border-spacing: 0;
+            position: relative;
+            
+            th, td {
+                border-bottom: 1px solid #4DD9FF;
+                padding: 10px;
+
+                &:nth-child(odd) {
+                    width: 25%;
+                }
+            }
+
+            th {
+                position: sticky;
+                top: 0;
+                background: #1B1F2F;
+            }
+
+            button {
+                font-size: xx-large;
+                color: #4DD9FF;
+                background: none;
+                border: none;
+
+                .bi-pencil {
+                    cursor: pointer;
+    
+                    &:hover {
+                        color: white;
+                    }
+                }
+            }
+        }
+    }
+}
+
+dialog {
+    animation: fade-out 0.3s ease-out;
+    top: 20%;
+    left: 25%;
+    width: 50%;
+    height: 60%;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    background: rgb(255, 255, 255, 0);
+
+    &:open {
+        animation: fade-in 0.3s ease-out;
+    }
+
+    .users-edition {
+        width: 100%;
+        height: calc(100% - 30px);
+        border-top: 15px solid #4DD9FF;
+        border-bottom: 15px solid #4DD9FF;
+        border-radius: 6px;
+        display: flex;
+        justify-content: center;
+        text-align: center;
+        color: #00CFFF;
+
+        .content-card {
+            width: 95%;
+            height: 100%;
+            border-left: 1px solid #4dd9ff;
+            border-right: 1px solid #4dd9ff;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-content: space-evenly;
+            text-shadow: 0px 0px 20px rgba(173, 237, 255, 0.9);
+            background: #1B1F2F;
+
+            h1, h3 {
+                width: 100%;
+            }
+
+            .selectors {
+                display: flex;
+                justify-content: space-evenly;
+                width: 100%;
+
+                .selector {
+                    width: 30%;
+                    
+                    select {
+                        width: 100%;
+                        margin-top: 10px;
+                        font-size: 1.5rem;
+                    }
+                }
+
+                fieldset {
+                    width: 20%;
+                    border: #00CFFF 1px solid;
+                    text-align: center;
+
+                    legend {
+                        padding: 0 10px;
+                    }
+
+                    p {
+                        padding: 5px 0;
+                    }
+                }
+            }
+
+            button {
+                font-size: x-large;
+                border-radius: 6px;
+            }
+            
+            .action-buttons {
+                width: 100%;
+                display: flex;
+                justify-content: space-evenly;
+                
+                .confirm-button {
+                    background: linear-gradient(90deg, #5A2EA6, #4DD9FF, #5A2EA6 5%, );
+                    background-size: 400% 400%;
+                    animation: lightLeftToRight 10s ease infinite;
+                    cursor: pointer;
+                    padding: 1% 5%;
+                    color: white;
+
+                    &:disabled {
+                        background: rgb(90, 46, 166, 0.5);
+                        cursor: default;
+                    }
+                }
+            }
+
+
+            @keyframes lightLeftToRight {
+                0% {
+                    background-position: 400% 0%;
+                }
+
+                25% {
+                    background-position: 300% 0%;
+                }
+
+                50% {
+                    background-position: 200% 0%;
+                }
+
+                75% {
+                    background-position: 100% 0%;
+                }
+
+                100% {
+                    background-position: 0% 0%;
+                }
+            }
+        }
+    }
+}
+
+@keyframes fade-in {
+    0% {
+        opacity: 0;
+        transform: scaleY(0);
+        display: none;
+    }
+
+    100% {
+        opacity: 1;
+        transform: scaleY(1);
+        display: block;
+    }
+}
+
+@keyframes fade-out {
+    0% {
+        opacity: 1;
+        transform: scaleY(1);
+        display: block;
+    }
+
+    100% {
+        opacity: 0;
+        transform: scaleY(0);
+        display: none;
+    }
+}
+
+dialog:open::backdrop {
+    background-color: black;
+    animation: backdrop-fade-in 0.7s ease-out forwards;
+}
+
+@keyframes backdrop-fade-in {
+    0% {
+    opacity: 0;
+    }
+
+    100% {
+    opacity: 0.25;
+    }
+}

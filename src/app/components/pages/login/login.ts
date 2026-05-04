@@ -43,7 +43,15 @@ export class Login implements OnInit {
     expires_in: 0,
     refresh_token: '',
     actual_money: 0,
-    channel_name: ''
+    channel_name: '',
+    group: {
+      group_id: '',
+      group_name: ''
+    },
+    role: {
+      role_id: '',
+      role_name: ''
+    }
   }
   
   ngOnInit(): void {
