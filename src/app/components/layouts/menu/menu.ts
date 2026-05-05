@@ -6,10 +6,13 @@ import { ClickOutsideDirective } from '../../../core/directives/click-outside';
 import { TokenPayload } from '../../../core/interfaces/token.interface';
 import { UserResponse, UserTwitchInfoResponse } from '../../../core/interfaces/user.interface';
 import { TwitchService } from '../../../core/services/twitch.service';
+import { MoneyReasonService } from '../../../core/services/money-reason.service';
+import { MoneyReason, MoneyReasonResponse, MoneyReasonsResponse } from '../../../core/interfaces/money-reason.interface';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-menu',
-  imports: [RouterLink, ClickOutsideDirective],
+  imports: [RouterLink, ClickOutsideDirective, FormsModule],
   templateUrl: './menu.html',
   styleUrl: './menu.scss',
 })
@@ -17,6 +20,7 @@ export class Menu implements OnInit {
 
   private userService = inject(UserService);
   private twitchService = inject(TwitchService);
+  private moneyReasonService = inject(MoneyReasonService)
 
   refreshTime: number = 30 * 60000; // mili segundos a minutos
 
@@ -30,9 +34,16 @@ export class Menu implements OnInit {
 
   profileImage = signal<string>('');
 
+  moneyReasons = signal<MoneyReason[]>([]);
+
+  editingIndex: number | null = null;
+
+  newCost: number = 0;
+
   ngOnInit(): void {
     
     this.getUser();
+    this.getMoneyReason();
 
     setInterval(() => {
       this.getUser()
@@ -101,6 +112,40 @@ export class Menu implements OnInit {
         console.log(err)
       }
     })
+  }
+
+  getMoneyReason() {
+
+    this.moneyReasonService.getMoneyReasons().subscribe({
+      next: (res: MoneyReasonsResponse) => {
+        this.moneyReasons.set(res.data)
+      },
+      error: err => {
+        console.log(err)
+      }
+    })
+  }
+
+  enableEditing(index: number ,actualCost: number) {
+    this.editingIndex = index;
+    this.newCost = actualCost;
+  }
+
+  confirmEdit(idMoneyHistory: string, newCost: number) {
+    this.editingIndex = null;
+
+    this.moneyReasonService.editMoneyReason(idMoneyHistory, {"quantity": newCost}).subscribe({
+      next: (res: MoneyReasonResponse) => {
+        this.getMoneyReason()
+      },
+      error: err => {
+        console.log(err)
+      }
+    })
+  }
+
+  cancelEdit() {
+    this.editingIndex = null;
   }
 
 }

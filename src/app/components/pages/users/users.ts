@@ -72,7 +72,6 @@ export class Users {
       this.decoded = jwtDecode<TokenPayload>(token);
       this.usersService.getUsers().subscribe({
         next: (res: UsersResponse) => {
-          console.log(res.data)
           this.users = res.data
           this.isLoading.update(value => !value)
         },
@@ -87,7 +86,6 @@ export class Users {
 
     this.groupsService.getGroups().subscribe({
       next: (res) => {
-        console.log(res.data)
         this.groups = res.data;
       },
       error: err => {
@@ -100,7 +98,6 @@ export class Users {
 
     this.rolesService.getRoles().subscribe({
       next: (res: any) => {
-        console.log(res.data)
         this.roles = res.data;
       },
       error: err => {
@@ -110,7 +107,6 @@ export class Users {
   }
 
   getUserInfo(user: User) {
-    console.log(user)
     this.selectedUser = user;
   }
 
