@@ -1,11 +1,11 @@
 <div class="menu" (clickOutside)="closeSubmenu()">
     <section class="options">
         <p routerLink="agenda" (click)="closeSubmenu()">Agenda</p>
-        <p (click)="toggleSubmenu('rankings')">Rankings</p>
+        <p (click)="toggleSubmenu('rankings'); ">Rankings</p>
         <p routerLink="live-streamers" (click)="closeSubmenu()">Apoyo</p>
         @if (decoded.role === 'superadmin') {
             <p routerLink="groups" (click)="closeSubmenu()">Grupos</p>
-            <p routerLink="users">Usuarios</p>
+            <p routerLink="users" (click)="closeSubmenu()">Usuarios</p>
         }
     </section>
 
@@ -33,12 +33,12 @@
     </section>
 </div>
 
-<div class="rankings">
+<div class="rankings" [class.show]="activeSubmenu === 'rankings'" [class.hide]="!isFirstLoadRankings && activeSubmenu !== 'rankings'" [class.rankings-superadmin]="decoded.role === 'superadmin'">
     <p routerLink="global-ranking">Global</p>
     <p routerLink="group-ranking">Grupal</p>
 </div>
 
-<div class="profile-options">
+<div class="profile-options" [class.show]="activeSubmenu === 'profile-options'" [class.hide]="!isFirstLoadProfile && activeSubmenu !== 'profile-options'">
     <p routerLink="profile">Perfil</p>
     <p routerLink="help">Ayuda</p>
     <p>Aviso de <br> privacidad</p>

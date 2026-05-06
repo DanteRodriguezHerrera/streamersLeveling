@@ -1,4 +1,7 @@
-@if (decoded.group !== null) {
+@if (decoded.group === 'null') {
+    <app-no-group />
+}
+@else {
     @if (!isLoading()) {
         <div class="main">
             <h1>Apoya a otros creadores de contenido</h1>
@@ -45,7 +48,4 @@
             Cargando...
         </p>
     }
-}
-@else {
-    <app-no-group />
 }

@@ -1,9 +1,11 @@
-@if(!isLoading()) {
-    <div class="main-ranking">
-        <fieldset class="ranking">
-            <legend>Ranking grupal</legend>
-
-            @if(ranking.length > 0) {
+@if(decoded.group === 'null') {
+    <app-no-group />
+}
+@else {
+    @if(!isLoading()) {
+        <div class="main-ranking">
+            <fieldset class="ranking">
+                <legend>Ranking grupal</legend>
                 <table>
                     <tr>
                         <th>Rango</th>
@@ -28,17 +30,14 @@
                         </tr>
                     }
                 </table>
-            }
-            @else {
-                <app-no-group />
-            }
-        </fieldset>
-    </div>
-}
-@else {
-    <p style="color: white;">
-        Cargando...
-    </p>
+            </fieldset>
+        </div>
+    }
+    @else {
+        <p style="color: white;">
+            Cargando...
+        </p>
+    }
 }
 
 <dialog id="my-dialog">

@@ -22,6 +22,10 @@ export class Menu implements OnInit {
   private twitchService = inject(TwitchService);
   private moneyReasonService = inject(MoneyReasonService)
 
+  activeSubmenu: 'rankings' | 'profile-options' | null = null;
+  isFirstLoadRankings = true;
+  isFirstLoadProfile = true;
+
   refreshTime: number = 30 * 60000; // mili segundos a minutos
 
   mana = this.userService.mana;
@@ -35,9 +39,7 @@ export class Menu implements OnInit {
   profileImage = signal<string>('');
 
   moneyReasons = signal<MoneyReason[]>([]);
-
   editingIndex: number | null = null;
-
   newCost: number = 0;
 
   ngOnInit(): void {
@@ -50,34 +52,18 @@ export class Menu implements OnInit {
     }, this.refreshTime)
   }
 
-  toggleSubmenu(className: string) {
-    const submenu = document.getElementsByClassName(className);
-
-    submenu[0].classList.remove("hide");
-    submenu[0].classList.add("show");
-    if(className == 'rankings' && document.getElementsByClassName('profile-options')[0].classList.contains('show')) {
-      document.getElementsByClassName('profile-options')[0].classList.remove('show')
-      document.getElementsByClassName('profile-options')[0].classList.add('hide')
+  toggleSubmenu(name: 'rankings' | 'profile-options') {
+    this.activeSubmenu = this.activeSubmenu === name ? null : name;
+    if(name === 'rankings'){
+      this.isFirstLoadRankings = false;
     }
-    if(className == 'profile-options' && document.getElementsByClassName('rankings')[0].classList.contains('show')) {
-      document.getElementsByClassName('rankings')[0].classList.remove('show')
-      document.getElementsByClassName('rankings')[0].classList.add('hide')
+    if(name === 'profile-options') {
+      this.isFirstLoadProfile = false
     }
   }
 
   closeSubmenu() {
-    const rankingsSubmenu = document.getElementsByClassName('rankings');
-    const profileSubmenu = document.getElementsByClassName('profile-options');
-
-    if(rankingsSubmenu[0].classList.contains("show")) {
-      rankingsSubmenu[0].classList.remove("show");
-      rankingsSubmenu[0].classList.add("hide");
-    }
-
-    if(profileSubmenu[0].classList.contains("show")) {
-      profileSubmenu[0].classList.remove("show");
-      profileSubmenu[0].classList.add("hide");
-    }
+    this.activeSubmenu = null;
   }
   
   getUser() {
@@ -87,12 +73,6 @@ export class Menu implements OnInit {
         if(res.jwt_token){
           this.decoded = jwtDecode<TokenPayload>(res.jwt_token)
           localStorage.setItem("jwtToken", res.jwt_token)
-
-          const submenu = document.getElementsByClassName("rankings");
-
-          if(this.decoded.role === 'superadmin') {
-            submenu[0].classList.add("rankings-superadmin")
-          }
         }
 
         const twitchToken = localStorage.getItem('twitchAuthToken');
@@ -115,7 +95,6 @@ export class Menu implements OnInit {
   }
 
   getMoneyReason() {
-
     this.moneyReasonService.getMoneyReasons().subscribe({
       next: (res: MoneyReasonsResponse) => {
         this.moneyReasons.set(res.data)
@@ -147,5 +126,4 @@ export class Menu implements OnInit {
   cancelEdit() {
     this.editingIndex = null;
   }
-
 }

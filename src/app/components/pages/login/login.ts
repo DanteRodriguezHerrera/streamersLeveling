@@ -77,6 +77,7 @@ export class Login implements OnInit {
           
           if(res.status === 204) {
             localStorage.clear()
+            this.router.navigateByUrl("/login")
           }
         },
         error: err => {

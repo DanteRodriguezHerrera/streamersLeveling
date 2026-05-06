@@ -9,7 +9,7 @@ export interface IAgenda {
 }
 
 export interface SearchLiveStreams {
-  group_id: string;
+  group_id: string | null;
   day_name: string;
   hour_name: string;
 }

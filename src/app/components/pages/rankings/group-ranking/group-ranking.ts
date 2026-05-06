@@ -29,26 +29,29 @@ export class GroupRanking {
   userId: string = '';
 
   ngOnInit(): void {
-    
-    this.getRanking();
-  }
-
-  getRanking() {
 
     const token = localStorage.getItem("jwtToken");
 
-    if(token){
+    if(token) {
       this.decoded = jwtDecode<TokenPayload>(token);
-      this.usersService.getUsersByGroup(this.decoded.group).subscribe({
-        next: (res: UsersResponse) => {
-          this.ranking = res.data
-          this.isLoading.update(value => !value)
-        },
-        error: err => {
-          console.log(err)
-        }
-      })
+      
+      if(this.decoded.group !== 'null') {
+        this.getRanking();
+      }
     }
+    
+  }
+
+  getRanking() {
+    this.usersService.getUsersByGroup(this.decoded.group).subscribe({
+      next: (res: UsersResponse) => {
+        this.ranking = res.data
+        this.isLoading.update(value => !value)
+      },
+      error: err => {
+        console.log(err)
+      }
+    })
   }
 
   getExpulsionUser(user_id: string) {

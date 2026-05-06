@@ -1,0 +1,18 @@
+.main {
+    color: #4DD9FF;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: xx-large;
+    width: 100%;
+    height: calc(100% - 50px);
+
+    a:link, a:visited {
+        color: #4DD9FF;
+    }
+
+    a:hover {
+        color: white;
+    }
+}
