@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
 import { UserService } from '../../../core/services/user.service';
 import { ClickOutsideDirective } from '../../../core/directives/click-outside';
@@ -9,6 +9,7 @@ import { TwitchService } from '../../../core/services/twitch.service';
 import { MoneyReasonService } from '../../../core/services/money-reason.service';
 import { MoneyReason, MoneyReasonResponse, MoneyReasonsResponse } from '../../../core/interfaces/money-reason.interface';
 import { FormsModule } from '@angular/forms';
+import { validationTokenResponse, tokenResponse } from '../../../core/interfaces/twitch.interface';
 
 @Component({
   selector: 'app-menu',
@@ -18,6 +19,7 @@ import { FormsModule } from '@angular/forms';
 })
 export class Menu implements OnInit {
 
+  private router = inject(Router);
   private userService = inject(UserService);
   private twitchService = inject(TwitchService);
   private moneyReasonService = inject(MoneyReasonService)
@@ -42,13 +44,17 @@ export class Menu implements OnInit {
   editingIndex: number | null = null;
   newCost: number = 0;
 
+  userId: string | null = ''
+
   ngOnInit(): void {
-    
-    this.getUser();
+
+    this.userId = localStorage.getItem('user');
+
+    this.verifyUserExists()
     this.getMoneyReason();
 
     setInterval(() => {
-      this.getUser()
+      this.verifyUserExists()
     }, this.refreshTime)
   }
 
@@ -65,28 +71,73 @@ export class Menu implements OnInit {
   closeSubmenu() {
     this.activeSubmenu = null;
   }
-  
-  getUser() {
-    this.userService.getUser(localStorage.getItem('user')!).subscribe({
-      next: (res: UserResponse) => {
-        this.userService.mana.set(res.data.actual_money);
-        if(res.jwt_token){
-          this.decoded = jwtDecode<TokenPayload>(res.jwt_token)
-          localStorage.setItem("jwtToken", res.jwt_token)
-        }
 
-        const twitchToken = localStorage.getItem('twitchAuthToken');
-        if(twitchToken) {
-          this.twitchService.getUsersInfo(twitchToken, [res.data.channel_name]).subscribe({
-            next: (res: UserTwitchInfoResponse) => {
-              this.profileImage.set(res.data[0].profile_image_url);
-            },
-            error: err => {
-              console.log(err)
+  verifyUserExists() {
+    if(this.userId !== null) {
+      this.userService.getUser(this.userId).subscribe({
+        next: (res: UserResponse) => {
+          if(res.status === 201) {
+            this.validatedToken(res.data.access_token, res.data.refresh_token);
+
+            if(res.jwt_token){
+              this.decoded = jwtDecode<TokenPayload>(res.jwt_token)
+              localStorage.setItem("jwtToken", res.jwt_token)
             }
-          })
-        }
 
+            this.userService.mana.set(res.data.actual_money);
+
+            const twitchToken = localStorage.getItem('twitchAuthToken');
+            if(twitchToken) {
+              this.twitchService.getUsersInfo(twitchToken, [res.data.channel_name]).subscribe({
+                next: (res: UserTwitchInfoResponse) => {
+                  this.profileImage.set(res.data[0].profile_image_url);
+                },
+                error: err => {
+                  console.log(err)
+                }
+              })
+            }
+          }
+          
+          if(res.status === 204) {
+            localStorage.clear()
+            this.router.navigateByUrl("/login")
+          }
+        },
+        error: err => {
+          console.log(err)
+        }
+      })
+    }
+    else {
+      this.router.navigateByUrl("/login")
+    }
+  }
+
+  validatedToken(twitchToken: string, refreshToken: string = '') {
+    this.twitchService.validateTwitchToken(twitchToken).subscribe({
+      next: (res: validationTokenResponse) => {},
+      error: (err) => {
+        console.log(err)
+        this.refreshNewToken(refreshToken)
+      }
+    })
+  }
+
+  refreshNewToken(refreshToken: string) {
+    this.twitchService.refreshTwitchToken(refreshToken).subscribe({
+      next: (res: tokenResponse) => {
+        localStorage.setItem('twitchAuthToken', res.access_token)
+        this.validatedToken(res.access_token)
+
+        this.userService.updateUser(this.userId!, {"access_token": res.access_token}).subscribe({
+          next: () => {
+
+          },
+          error: err => {
+            console.log(err)
+          }
+        })
       },
       error: err => {
         console.log(err)
