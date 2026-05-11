@@ -11,6 +11,8 @@ import { UserService } from '../../../core/services/user.service';
 import { TokenPayload } from '../../../core/interfaces/token.interface';
 import { jwtDecode } from 'jwt-decode';
 import { NoGroup } from '../../layouts/no-group/no-group';
+import { MoneyReasonService } from '../../../core/services/money-reason.service';
+import { MoneyReasonsResponse } from '../../../core/interfaces/money-reason.interface';
 
 @Component({
   selector: 'app-agenda',
@@ -24,6 +26,9 @@ export class Agenda implements OnInit {
   private dayService = inject(DayService);
   private hourService = inject(HourService);
   private userService = inject(UserService);
+  private moneyReasonService = inject(MoneyReasonService);
+
+  private user = localStorage.getItem('user')
 
   days = new Map<string, any[]>([
     ["Lunes", []],
@@ -39,7 +44,7 @@ export class Agenda implements OnInit {
   hours: number[] = Array.from({ length: 24 }, (_, i) => i)
 
   hoursOptions: Hour[] = [];
-  hoursOptionsFiltered: Hour[] = [];
+  hoursOptionsFiltered = signal<Hour[]>([]);
 
   monday = new Map<string, number>();
   tuesday = new Map<string, number>();
@@ -57,6 +62,10 @@ export class Agenda implements OnInit {
 
   usersTooltips: Map<string, any[]>[] = []
 
+  selectedHour: string | null = null
+  normalHour = signal<number>(0);
+  vipHour = signal<number>(0)
+
   is24HourFormat = signal(true);
 
   isLoading = signal(true);
@@ -66,7 +75,29 @@ export class Agenda implements OnInit {
     day_name: ''
   }
 
-  selectedHour: string | null = null
+  mySchedule = signal<any[]>([]);
+
+  todayDate: Date = new Date();
+  daysMap: any = {
+    Lunes: 1,
+    Martes: 2,
+    Miércoles: 3,
+    Jueves: 4,
+    Viernes: 5,
+    Sábado: 6
+  };
+
+  scheduleToDelete: any = {
+    user_id: '',
+    day: {
+      day_id: '',
+      day_name: ''
+    },
+    hour: {
+      hour_id: '',
+      hour_name: ''
+    }
+  };
 
   newSchedule: IAgenda = {
     user_id: '',
@@ -90,7 +121,7 @@ export class Agenda implements OnInit {
       if(this.decoded.group !== null) {
         this.getScheduledHours();
         this.getDays();
-        this.getHours();
+        this.getDaysCost();
       }
     }
   }
@@ -108,7 +139,6 @@ export class Agenda implements OnInit {
   }
 
   getScheduledHours() {
-
     this.hours.forEach(hour => {
       this.fillMaps(hour.toString(), this.monday, this.mondayStreamers);
       this.fillMaps(hour.toString(), this.tuesday, this.tuesdayStreamers);
@@ -118,23 +148,24 @@ export class Agenda implements OnInit {
       this.fillMaps(hour.toString(), this.saturday, this.saturdayStreamers);
     });
 
-    this.agendaService.getScheduledHours().subscribe({
-      next: (res: any) => {
-        this.countScheduledHours(this.monday, res.monday, "Lunes", this.mondayStreamers);
-        this.countScheduledHours(this.tuesday, res.tuesday, "Martes", this.tuesdayStreamers);
-        this.countScheduledHours(this.wednesday, res.wednesday, "Miércoles", this.wednesdayStreamers);
-        this.countScheduledHours(this.thursday, res.thursday, "Jueves", this.thursdayStreamers);
-        this.countScheduledHours(this.friday, res.friday, "Viernes", this.fridayStreamers);
-        this.countScheduledHours(this.saturday, res.saturday, "Sábado", this.saturdayStreamers);
-
-        this.usersTooltips = [this.mondayStreamers, this.tuesdayStreamers, this.wednesdayStreamers, this.thursdayStreamers, this.fridayStreamers, this.saturdayStreamers];
-        
-        this.isLoading.update(value => !value)
-      },
-      error: err => {
-        console.log(err)
-      }
-    })
+    if(this.decoded.group){
+      this.agendaService.getScheduledHours(this.decoded.group).subscribe({
+        next: (res: any) => {
+          this.countScheduledHours(this.monday, res.monday, "Lunes", this.mondayStreamers);
+          this.countScheduledHours(this.tuesday, res.tuesday, "Martes", this.tuesdayStreamers);
+          this.countScheduledHours(this.wednesday, res.wednesday, "Miércoles", this.wednesdayStreamers);
+          this.countScheduledHours(this.thursday, res.thursday, "Jueves", this.thursdayStreamers);
+          this.countScheduledHours(this.friday, res.friday, "Viernes", this.fridayStreamers);
+          this.countScheduledHours(this.saturday, res.saturday, "Sábado", this.saturdayStreamers);
+  
+          this.usersTooltips = [this.mondayStreamers, this.tuesdayStreamers, this.wednesdayStreamers, this.thursdayStreamers, this.fridayStreamers, this.saturdayStreamers];
+          this.isLoading.set(false)
+        },
+        error: err => {
+          console.log(err)
+        }
+      })
+    }
   }
 
   countScheduledHours(dayWithHours: Map<string, number>, responseDay: any, dayName: string, usersDay: Map<string, any[]>) {
@@ -177,16 +208,15 @@ export class Agenda implements OnInit {
 
     this.newSchedule.day_id = day.day_id
 
-    const dayHours = this.days.get(day.day_name);
-
-    this.hoursOptionsFiltered = Array.from(this.hoursOptions);
-
-    if(dayHours !== undefined) {
-      dayHours.forEach((hour, index) => {
-        if(hour[1] == 2){
-          this.hoursOptionsFiltered.splice(index, 1);
+    if(this.user) {
+      this.hourService.getAvailableHours(this.user, this.decoded.group!, day.day_id).subscribe({
+        next: (res: HoursResponse) => {
+          this.hoursOptionsFiltered.set(res.data)
+        },
+        error: err => {
+          console.log(err)
         }
-      });
+      })
     }
   }
 
@@ -195,36 +225,22 @@ export class Agenda implements OnInit {
     this.selectedHour = hour.hour_name
   }
 
-  getHours() {
-    this.hourService.getHours().subscribe({
-      next: (res: HoursResponse) => {
-        this.hoursOptions = res.data;
-        this.hoursOptionsFiltered = res.data;
-      },
-      error: err => {
-        console.log(err)
-      }
-    })
-  }
-
   checkNewSchedule() {
 
-    const user = localStorage.getItem('user')
-
-    this.newSchedule.user_id = user ? user : '';
+    this.newSchedule.user_id = this.user ? this.user : '';
 
     if(this.newSchedule.user_id == '' || this.newSchedule.day_id == '' || this.newSchedule.hour_id == '' ) {
       alert("Favor de elegir un dia y hora para agendar")
     }
     else {
-      if(this.selectedDay.day_name == 'Sabado' && this.userService.mana() >= 50) {
-        this.schedule(50)
+      if(this.selectedDay.day_name == 'Sábado' && this.userService.mana() >= this.vipHour()) {
+        this.schedule(this.vipHour())
       }
-      else if(this.selectedDay.day_name != 'Sabado' && this.userService.mana() >= 10) {
-        this.schedule(10)
+      else if(this.selectedDay.day_name != 'Sábado' && this.userService.mana() >= this.normalHour()) {
+        this.schedule(this.normalHour())
       }
       else {
-        alert("No tienes suficiente mana para agendar");
+        alert(`No tienes suficiente mana para agendar en ${this.selectedDay.day_name}`);
         this.clearDaySelected();
       }
     }
@@ -264,8 +280,97 @@ export class Agenda implements OnInit {
         day_id: '',
         hour_id: ''
       }
-      this.hoursOptionsFiltered = Array.from(this.hoursOptions);
+      // this.hoursOptionsFiltered = Array.from(this.hoursOptions);
       this.selectedHour = null;
   }
 
+  getDaysCost() {
+    this.moneyReasonService.getMoneyReasons().subscribe({
+      next: (res: MoneyReasonsResponse) => {
+        res.data.forEach(element => {
+          if(element.reason === 1) {
+            this.normalHour.set(element.quantity)
+          }
+          if(element.reason === 3) {
+            this.vipHour.set(element.quantity)
+          }
+        });
+      },
+      error: err => {
+        console.log(err)
+      }
+    })
+  }
+
+  getMyScheduledHours() {
+    
+    if(this.user){
+      this.agendaService.getScheduledHoursByUser(this.user).subscribe({
+        next: (res: any) => {
+          this.mySchedule.set(res.data)
+        },
+        error: err => {
+          console.log(err)
+        }
+      })
+    }
+  }
+
+  isPastSchedule(schedule: any): boolean {
+    const currentDay = this.todayDate.getDay();
+    const scheduleDay = this.daysMap[schedule.day.day_name];
+
+    const [hours, minutes] = schedule.hour.hour_name
+      .split(':')
+      .map(Number);
+
+    const scheduleDate = new Date(this.todayDate);
+
+    const diff = scheduleDay - currentDay;
+
+    scheduleDate.setDate(this.todayDate.getDate() + diff);
+    scheduleDate.setHours(hours, minutes, 0, 0);
+
+    return scheduleDate < this.todayDate;
+  }
+
+  getHourToDelete(schedule: IAgenda) {
+    this.scheduleToDelete = schedule;
+  }
+
+  confirmCancelHour() {
+    const dayToCancel = this.daysMap[this.scheduleToDelete.day.day_name]
+
+    this.agendaService.deleteOneHourScheduled(this.scheduleToDelete.user_id, this.scheduleToDelete.day.day_id, this.scheduleToDelete.hour.hour_id).subscribe({
+      next: (res: any) => {
+
+        if(this.todayDate.getDay() < dayToCancel) {
+          if(res.data.day.day_name == 'Sábado') {
+            this.userService.mana.update(value => value + this.vipHour());
+    
+            this.userService.updateUser(this.scheduleToDelete.user_id, {"actual_money": this.userService.mana()}).subscribe({
+              error: err => {
+                console.log(err)
+              }
+            })
+          }
+          else if(res.data.day.day_name != 'Sábado') {
+            this.userService.mana.update(value => value + this.normalHour());
+    
+            this.userService.updateUser(this.scheduleToDelete.user_id, {"actual_money": this.userService.mana()}).subscribe({
+              error: err => {
+                console.log(err)
+              }
+            })
+          }
+        }
+
+        this.getScheduledHours();
+        this.getMyScheduledHours();
+      },
+      error: err => {
+        console.log(err)
+      }
+    })
+  }
 }

@@ -110,7 +110,7 @@
                 .no-schedule {
                     margin: 15px;
 
-                    svg {
+                    i {
                         display: none;
                     }
                 }
@@ -123,23 +123,25 @@
                 }
 
                 .schedule-one-hour {
-                    @include with-schedule;                    
+                    @include with-schedule;
 
-                    svg {
+                    i {
                         width: 25%;
+                        font-size: x-large;
 
-                        &:nth-child(3) {
+                        &:last-of-type {
                             display: none;
                         }
                     }
-                    
+
                     h1 {
                         width: 50%;
                     }
                 }
 
                 .schedule-two-hours {
-                    @include with-schedule;                    
+                    @include with-schedule;
+
                     justify-content: space-around;
                 }
 
@@ -330,6 +332,53 @@ dialog {
     }
 }
 
+.my-hours {
+    width: 80%;
+    border: 1px solid #4DD9FF;
+    border-radius: 6px;
+    text-align: center;
+    font-size: xx-large;
+    overflow-y: auto;
+    scrollbar-color: #4DD9FF transparent ;
+
+    legend {
+        padding: 5px 10px;
+        border: 1px solid #4DD9FF;
+        border-radius: 6px;
+        color: #00CFFF;
+        margin-bottom: 10px;
+    }
+
+    table {
+        width: 100%;
+        text-align: center;
+        border-collapse: separate;
+        border-spacing: 0;
+        position: relative;
+        user-select: none;
+
+        .past-schedule td {
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
+
+        button {
+            font-size: xx-large;
+            color: #4DD9FF;
+            background: none;
+            border: none;
+
+            .bi-trash {
+                cursor: pointer;
+
+                &:hover {
+                    color: white;
+                }
+            }
+        }
+    }
+}
+
 @keyframes fade-in {
     0% {
         opacity: 0;
@@ -370,5 +419,92 @@ dialog:open::backdrop {
 
     100% {
     opacity: 0.25;
+    }
+}
+
+.expulsion {
+    width: 100%;
+    height: calc(100% - 30px);
+    border-top: 15px solid #4DD9FF;
+    border-bottom: 15px solid #4DD9FF;
+    border-radius: 6px;
+    display: flex;
+    justify-content: center;
+    color: #00CFFF;
+
+    .content-card {
+        width: 95%;
+        height: 100%;
+        border-left: 1px solid #4dd9ff;
+        border-right: 1px solid #4dd9ff;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-content: space-evenly;
+        text-shadow: 0px 0px 20px rgba(173, 237, 255, 0.9);
+        background: #1B1F2F;
+
+        .schedule-to-delete {
+            width: 100%;
+            
+            h2 {
+                width: 100%;
+                text-align: center;
+            }
+        }
+        
+
+        fieldset {
+            border-color: #4dd9ff;
+            border-radius: 6px;
+            padding: 5px;
+
+            legend {
+                color: #4DD9FF;
+                border: 1px solid #4DD9FF;
+                border-radius: 6px;
+                padding: 5px 10px;
+                margin: 5px;
+            }
+        }
+        
+        .action-buttons {
+            width: 100%;
+            display: flex;
+            justify-content: space-evenly;
+            
+            .confirm-button {
+                font-size: x-large;
+                background: linear-gradient(90deg, #5A2EA6, #4DD9FF, #5A2EA6 5%, );
+                background-size: 400% 400%;
+                animation: lightLeftToRight 10s ease infinite;
+                cursor: pointer;
+                padding: 1% 5%;
+                color: white;
+                border-radius: 6px;
+            }
+        }
+
+        @keyframes lightLeftToRight {
+            0% {
+                background-position: 400% 0%;
+            }
+
+            25% {
+                background-position: 300% 0%;
+            }
+
+            50% {
+                background-position: 200% 0%;
+            }
+
+            75% {
+                background-position: 100% 0%;
+            }
+
+            100% {
+                background-position: 0% 0%;
+            }
+        }
     }
 }

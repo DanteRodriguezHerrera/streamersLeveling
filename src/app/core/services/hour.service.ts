@@ -13,7 +13,10 @@ export class HourService {
     BASE_URL = environment.apiUrl;
 
     getHours() {
-
       return this.http.get<HoursResponse>(this.BASE_URL + '/hours');
+    }
+
+    getAvailableHours(user_id: string, group_id: string, day_id: string) {
+      return this.http.get<HoursResponse>(this.BASE_URL + '/hours/no-scheduled/' + user_id + '/' + group_id + '/' + day_id)
     }
 }

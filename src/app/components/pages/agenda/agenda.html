@@ -1,8 +1,8 @@
 @if (decoded.group === 'null') {
-        <app-no-group />
+    <app-no-group />
 }
 @else {
-@if (!isLoading()) {
+    @if (!isLoading()) {
         <div class="main">
             <section class="schedule-section">
                 <div class="timeFormat">
@@ -10,7 +10,10 @@
                     <label for="">Cambiar formato de horas (12 o 24 horas)</label>
                 </div>
         
-                <button command="show-modal" commandfor="my-dialog">Agendar</button>
+                <div>
+                    <button style="margin-right: 20px;" command="show-modal" commandfor="my-hours-dialog" (click)="getMyScheduledHours()">Mis horas</button>
+                    <button command="show-modal" commandfor="schedule-dialog" (click)="getDaysCost()">Agendar</button>
+                </div>
             </section>
         
             <section class="available-hours">
@@ -22,28 +25,22 @@
                     <div class="hour-of-the-day">
                         @for(hour of days.get(day); track $index) {
                             <div [class.no-schedule]="hour[1] == 0" [class.schedule-one-hour]="hour[1] == 1" [class.schedule-two-hours]="hour[1] == 2">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">
-                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
-                                    <path d="m10.97 4.97-.02.022-3.473 4.425-2.093-2.094a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05"/>
-                                </svg>
+                                <i class="bi bi-check-circle"></i>
                                 <h1>{{hour[0] | timeFormat:is24HourFormat()}}</h1>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">
-                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
-                                    <path d="m10.97 4.97-.02.022-3.473 4.425-2.093-2.094a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05"/>
-                                </svg>
+                                <i class="bi bi-check-circle"></i>
     
                                 @if(usersTooltips[i].get(hour[0])?.length != 0) {
                                     <ul class="tooltiptext" style="list-style-type: none;">
                                         @for (streamer of usersTooltips[i].get(hour[0]); track $index;) {
-                                            <li>
-                                                {{streamer.user.channel_name}}
-                                            </li>
+                                            @if (streamer.hour.hour_name === hour[0]) {
+                                                <li>
+                                                    {{streamer.user.channel_name}}
+                                                </li>
+                                            }
                                         }
                                     </ul>
                                 }
                             </div>
-    
-    
                         }
                     </div>
                 </div>
@@ -58,9 +55,7 @@
     }
 }
 
-
-
-<dialog id="my-dialog">
+<dialog id="schedule-dialog">
     <div class="agenda">
         <div class="content-card">
             <h1>
@@ -82,8 +77,8 @@
 
                 <fieldset>
                     <legend>Costos de maná</legend>
-                    <p>L - V: <b>10</b></p>
-                    <p>Sábado: <b>50</b></p>
+                    <p>L - V: <b>{{normalHour()}}</b></p>
+                    <p>Sábado: <b>{{vipHour()}}</b></p>
                 </fieldset>
             </div>
 
@@ -94,20 +89,81 @@
                 </h3>
                 
                 <div class="hour-buttons">
-                    @for (hour of hoursOptionsFiltered; track $index) {
+                    @for (hour of hoursOptionsFiltered(); track $index) {
                         <button class="hour-button" [class.selected]="selectedHour === hour.hour_name" (click)="selectHour(hour)">{{hour.hour_name| timeFormat:is24HourFormat()}}</button>
                     }
                 </div>
             }
 
             <div class="action-buttons">
-                <button class="confirm-button" command="close" commandfor="my-dialog" (click)="clearDaySelected()">Cancelar</button>
+                <button class="confirm-button" command="close" commandfor="schedule-dialog" (click)="clearDaySelected()">Cancelar</button>
                 @if(newSchedule.day_id == '' || newSchedule.hour_id == '') {
-                    <button class="confirm-button" disabled commandfor="my-dialog">Confirmar</button>
+                    <button class="confirm-button" disabled commandfor="schedule-dialog">Confirmar</button>
                 }
                 @else {
-                    <button class="confirm-button" command="close" commandfor="my-dialog" (click)="checkNewSchedule()">Confirmar</button>
+                    <button class="confirm-button" command="close" commandfor="schedule-dialog" (click)="checkNewSchedule()">Confirmar</button>
                 }
+            </div>
+        </div>
+    </div>
+</dialog>
+
+<dialog id="my-hours-dialog">
+    <div class="agenda">
+        <div class="content-card">
+            <fieldset class="my-hours">
+                <legend>Mis horas agendadas</legend>
+
+                <table>
+                    <tr>
+                        <th>Dia</th>
+                        <th>Hora</th>
+                        <th></th>
+                    </tr>
+                    
+                    @for (schedule of mySchedule(); track $index) {
+                        <tr [class.past-schedule]="isPastSchedule(schedule)">
+                            <td>{{schedule.day.day_name}}</td>
+                            <td>{{schedule.hour.hour_name | timeFormat:is24HourFormat()}}</td>
+                            @if (!isPastSchedule(schedule)) {
+                                <td>
+                                    <button command="show-modal" commandfor="confirm-delete-hour">
+                                        <i class="bi bi-trash" (click)="getHourToDelete(schedule)"></i>
+                                    </button>
+                                </td>
+                            }
+                        </tr>
+                    }
+
+                </table>
+            </fieldset>
+
+            <div class="action-buttons">
+                <button class="confirm-button" command="close" commandfor="my-hours-dialog" (click)="clearDaySelected()">Cancelar</button>
+            </div>
+
+        </div>
+    </div>
+</dialog>
+
+<dialog id="confirm-delete-hour">
+    <div class="expulsion">
+        <div class="content-card">
+            <h1>
+                ¿Estas seguro que quieres cancelar esta hora agendada?
+            </h1>
+            
+            <div class="schedule-to-delete">
+                <h2>Dia: {{scheduleToDelete.day.day_name}}</h2>
+                <h2>Hora: {{scheduleToDelete.hour.hour_name | timeFormat:is24HourFormat()}}</h2>
+            </div>
+            <fieldset>
+                <legend>Nota</legend>
+                <p>Si cancelas una hora el mismo dia que esta agendada, no se reembolsara el maná</p>
+            </fieldset>
+            <div class="action-buttons">
+                <button class="confirm-button" command="close" commandfor="confirm-delete-hour">Cancelar</button>
+                <button class="confirm-button" command="close" commandfor="confirm-delete-hour" (click)="confirmCancelHour()">Confirmar</button>
             </div>
         </div>
     </div>

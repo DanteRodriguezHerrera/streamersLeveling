@@ -13,8 +13,8 @@ export class AgendaService {
 
     BASE_URL = environment.apiUrl;
   
-    getScheduledHours() {
-      return this.http.get(this.BASE_URL + '/agenda/scheduled');
+    getScheduledHours(group_id: string) {
+      return this.http.get(this.BASE_URL + '/agenda/scheduled/' + group_id);
     }
 
     createSchedule(newAgenda: IAgenda) {
@@ -25,4 +25,11 @@ export class AgendaService {
       return this.http.post<LiveStreamersResponse>(this.BASE_URL + '/agenda/todayStreams', searchLiveStreams)
     }
 
+    getScheduledHoursByUser(user_id: string) {
+      return this.http.get(this.BASE_URL + '/agenda/my-hours/' + user_id)
+    }
+
+    deleteOneHourScheduled(user_id: string, day_id: string, hour_id: string) {
+      return this.http.delete(this.BASE_URL + '/agenda/deleteHour/' + user_id + '/' + day_id + '/' + hour_id)
+    }
 }
