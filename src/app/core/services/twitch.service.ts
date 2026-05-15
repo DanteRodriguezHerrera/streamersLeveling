@@ -21,7 +21,7 @@ export class TwitchService {
 
   validateTwitchToken(twitchToken: string): Observable<validationTokenResponse> {
     const headers = {
-      Authorization: 'OAuth ' + twitchToken
+      Authorization: 'Bearer ' + twitchToken
     }
     
     return this.http.get<validationTokenResponse>('https://id.twitch.tv/oauth2/validate', { headers: headers, context: new HttpContext().set(CACHING_ENABLED, false) })

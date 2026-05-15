@@ -36,6 +36,7 @@ export class Menu implements OnInit {
     role: '',
     group: '',
     iat: 0,
+    name: ''
   }
 
   profileImage = signal<string>('');
@@ -73,7 +74,7 @@ export class Menu implements OnInit {
   }
 
   verifyUserExists() {
-    if(this.userId !== null) {
+    if(this.userId) {
       this.userService.getUser(this.userId).subscribe({
         next: (res: UserResponse) => {
           if(res.status === 201) {
@@ -85,18 +86,6 @@ export class Menu implements OnInit {
             }
 
             this.userService.mana.set(res.data.actual_money);
-
-            const twitchToken = localStorage.getItem('twitchAuthToken');
-            if(twitchToken) {
-              this.twitchService.getUsersInfo(twitchToken, [res.data.channel_name]).subscribe({
-                next: (res: UserTwitchInfoResponse) => {
-                  this.profileImage.set(res.data[0].profile_image_url);
-                },
-                error: err => {
-                  console.log(err)
-                }
-              })
-            }
           }
           
           if(res.status === 204) {
@@ -116,7 +105,19 @@ export class Menu implements OnInit {
 
   validatedToken(twitchToken: string, refreshToken: string = '') {
     this.twitchService.validateTwitchToken(twitchToken).subscribe({
-      next: (res: validationTokenResponse) => {},
+      next: (res: validationTokenResponse) => {
+        const twitchToken = localStorage.getItem('twitchAuthToken');
+        if(twitchToken) {
+          this.twitchService.getUsersInfo(twitchToken, [res.login]).subscribe({
+            next: (res: UserTwitchInfoResponse) => {
+              this.profileImage.set(res.data[0].profile_image_url);
+            },
+            error: err => {
+              console.log(err)
+            }
+          })
+        }
+      },
       error: (err) => {
         console.log(err)
         this.refreshNewToken(refreshToken)

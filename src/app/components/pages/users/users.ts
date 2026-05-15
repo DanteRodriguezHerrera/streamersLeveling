@@ -55,7 +55,8 @@ export class Users {
   decoded: TokenPayload = {
     role: '',
     group: '',
-    iat: 0
+    iat: 0,
+    name: ''
   }
 
   ngOnInit(): void {

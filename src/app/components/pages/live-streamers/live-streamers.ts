@@ -32,7 +32,8 @@ export class LiveStreamers implements OnInit {
   decoded: TokenPayload = {
     role: '',
     group: '',
-    iat: 0
+    iat: 0,
+    name: ''
   }
 
   ngOnInit(): void {

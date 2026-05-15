@@ -1,13 +1,31 @@
-<div class="main-container">
-  <iframe [src]="urlStream" class="embed-stream" allowfullscreen onclick="startWatchingStream()"> 
-  </iframe>
-
-  <iframe [src]="urlChat" class="embed-chat" >
-  </iframe>
-
-  <section>
-    Consejos
-  </section>
-</div>
-
+@if(!isLoading()) {
+  <div class="main-container">
+    <iframe [src]="urlStream" class="embed-stream" allow="autoplay; fullscreen" allowfullscreen></iframe>
+  
+    <iframe [src]="urlChat" class="embed-chat"> </iframe>
+  
+    <section class="win-mana">
+      <h1>Formas de obtener mana</h1>
+      <ul>
+        <li>Cada media hora vista y mínimo 5 comentarios
+          <i class="bi bi-arrow-right"></i> 
+          {{manaPerView()}}
+          <i class="bi bi-droplet-half"></i>
+        </li>
+        <li>
+          Suscribirse al canal y regalar subs
+          <i class="bi bi-arrow-right"></i> 
+          {{manaPerSub()}} x Sub
+          <i class="bi bi-droplet-half"></i>
+        </li>
+        <li>Próximamente mas formas de obtener maná</li>
+      </ul>
+    </section>
+  </div>
+}
+@else {
+    <p style="color: white;">
+        Cargando...
+    </p>
+}
 

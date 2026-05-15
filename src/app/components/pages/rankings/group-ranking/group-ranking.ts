@@ -23,7 +23,8 @@ export class GroupRanking {
   decoded: TokenPayload = {
     role: '',
     group: '',
-    iat: 0
+    iat: 0,
+    name: ''
   }
 
   userId: string = '';

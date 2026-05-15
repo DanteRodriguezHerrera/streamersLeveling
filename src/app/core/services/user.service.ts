@@ -27,6 +27,10 @@ export class UserService {
     return this.http.get<UsersResponse>(this.BASE_URL + '/users');
   }
 
+  getUserByChannelName(channel_name: string) : Observable<UserResponse> {
+    return this.http.get<UserResponse>(this.BASE_URL + '/users/byChannelName/' + channel_name)
+  }
+
   getUsersByGroup(group_id: string | null) : Observable<UsersResponse> {
     return this.http.get<UsersResponse>(this.BASE_URL + '/users/byGroup/' + group_id);
   }
