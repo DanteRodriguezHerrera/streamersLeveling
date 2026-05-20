@@ -17,9 +17,16 @@ export class Profile implements OnInit {
 
   moneyHistoryList = signal<IMoneyHistory[]>([]);
 
-  ngOnInit(): void {
-    
-    this.moneyHistoryService.getMoneyHistory('f5e234a0-6c41-41e4-bec5-17197536f7a6').subscribe({
+  userId = localStorage.getItem('user');
+
+  ngOnInit(): void { 
+    if(this.userId) {
+      this.getUserHistory(this.userId);
+    }
+  }
+  
+  getUserHistory(userId: string) {
+    this.moneyHistoryService.getMoneyHistory(userId).subscribe({
       next: (res: any) => {
         this.moneyHistoryList.set(res.data)
       },

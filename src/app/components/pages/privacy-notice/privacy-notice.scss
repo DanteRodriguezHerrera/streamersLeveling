@@ -1,0 +1,32 @@
+.container {
+    width: calc(100% - 40px);
+    height: calc(100% - 90px);
+    padding: 20px;
+    overflow-y: auto;
+    scrollbar-color: #4DD9FF transparent ;
+}
+
+h1 {
+    color: #9146FF;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+h2 {
+    color: #9146FF;
+    margin-top: 25px;
+}
+
+p, li {
+    color: #4DD9FF;
+    margin-bottom: 5px;
+    font-size: large;
+}
+
+ul {
+    padding-left: 20px;
+}
+
+.date {
+    opacity: 0.7;
+}

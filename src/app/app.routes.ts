@@ -48,5 +48,9 @@ export const routes: Routes = [
         path: 'users',
         loadComponent: () => import('./components/pages/users/users').then(u => u.Users),
         canActivate: [superAdminGuard]
+    },
+    {
+        path: 'privacy-notice',
+        loadComponent: () => import('./components/pages/privacy-notice/privacy-notice').then(pn => pn.PrivacyNotice)
     }
 ];

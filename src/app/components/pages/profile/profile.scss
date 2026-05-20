@@ -6,7 +6,6 @@
     align-content: space-between;
 
     section {
-        // border: white 1px solid;
         width: 100%;
         margin: 20px;
     }
@@ -16,8 +15,8 @@
     }
 
     .coins-history {
-        height: 60%;
-        // border: 1px solid white;
+        height: 95%;
+        font-size: x-large;
 
         .table-scroll {
             height: 90%;
@@ -25,6 +24,7 @@
             scrollbar-width: thin;
             border: 1px solid rgb(77, 217, 255);
             border-radius: 5px;
+            margin-top: 10px;
 
             table {
                 width: 100%;

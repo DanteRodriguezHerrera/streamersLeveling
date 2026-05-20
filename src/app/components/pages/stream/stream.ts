@@ -43,7 +43,7 @@ export class Stream implements OnInit, OnDestroy {
   urlStream: SafeResourceUrl = '';
   urlChat: SafeResourceUrl = '';
 
-  refreshTime = signal<number>(0.5 * 60000); // mili segundos a minutos
+  refreshTime = signal<number>(30 * 60000); // mili segundos a minutos
 
   messageCount = signal<number>(0);
   gainCoins = signal<boolean>(false);
