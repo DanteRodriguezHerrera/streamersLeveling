@@ -9,6 +9,7 @@ import { jwtDecode } from 'jwt-decode';
 import { TokenPayload } from '../../../core/interfaces/token.interface';
 import { UserService } from '../../../core/services/user.service';
 import { UserResponse } from '../../../core/interfaces/user.interface';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-stream',
@@ -32,7 +33,7 @@ export class Stream implements OnInit, OnDestroy {
 
   decodedJwt: TokenPayload = {
     role: '',
-    group: null,
+    group: 'null',
     name: '',
     iat: 0
   };
@@ -62,14 +63,16 @@ export class Stream implements OnInit, OnDestroy {
     user_id: localStorage.getItem('user')!
   }
 
+  parent = signal<string>(environment.parent);
+
   ngOnInit() {
     this.channel.set(this.route.snapshot.paramMap.get('channelId')!);
     
     this.userService.getUserByChannelName(this.channel()).subscribe({
       next: (res: UserResponse) => {
         if(res.status === 200) {
-          this.urlStream = this.sanitizer.bypassSecurityTrustResourceUrl(`https://player.twitch.tv/?channel=${this.channel()}&parent=localhost&muted=true`)
-          this.urlChat = this.sanitizer.bypassSecurityTrustResourceUrl(`https://www.twitch.tv/embed/${this.channel()}/chat?darkpopout&parent=localhost`)
+          this.urlStream = this.sanitizer.bypassSecurityTrustResourceUrl(`https://player.twitch.tv/?channel=${this.channel()}&parent=${this.parent()}&muted=true`)
+          this.urlChat = this.sanitizer.bypassSecurityTrustResourceUrl(`https://www.twitch.tv/embed/${this.channel()}/chat?darkpopout&parent=${this.parent()}`)
       
           this.startListenChat();
           this.getMoneyReasons();

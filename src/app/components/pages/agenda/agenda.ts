@@ -13,6 +13,8 @@ import { jwtDecode } from 'jwt-decode';
 import { NoGroup } from '../../layouts/no-group/no-group';
 import { MoneyReasonService } from '../../../core/services/money-reason.service';
 import { MoneyReasonsResponse } from '../../../core/interfaces/money-reason.interface';
+import { MoneyHistoryDTO } from '../../../core/interfaces/money-history.interface';
+import { MoneyHistoryService } from '../../../core/services/money-history.service';
 
 @Component({
   selector: 'app-agenda',
@@ -27,6 +29,7 @@ export class Agenda implements OnInit {
   private hourService = inject(HourService);
   private userService = inject(UserService);
   private moneyReasonService = inject(MoneyReasonService);
+  private moneyHistoryService = inject(MoneyHistoryService);
 
   private user = localStorage.getItem('user')
 
@@ -113,7 +116,6 @@ export class Agenda implements OnInit {
   }
 
   ngOnInit(): void {
-
     const token = localStorage.getItem("jwtToken");
 
     if(token) {
@@ -128,7 +130,6 @@ export class Agenda implements OnInit {
   }
 
   fillMaps(hour:string, dayMap: Map<string, number>, dayStreamersMap: Map<string, any[]>) {
-
     if(hour.toString().length == 1) {
       dayMap.set(`0${hour}:00`, 0);
       dayStreamersMap.set(`0${hour}:00`, []);
@@ -149,24 +150,22 @@ export class Agenda implements OnInit {
       this.fillMaps(hour.toString(), this.saturday, this.saturdayStreamers);
     });
 
-    if(this.decoded.group){
-      this.agendaService.getScheduledHours(this.decoded.group).subscribe({
-        next: (res: any) => {
-          this.countScheduledHours(this.monday, res.monday, "Lunes", this.mondayStreamers);
-          this.countScheduledHours(this.tuesday, res.tuesday, "Martes", this.tuesdayStreamers);
-          this.countScheduledHours(this.wednesday, res.wednesday, "Miércoles", this.wednesdayStreamers);
-          this.countScheduledHours(this.thursday, res.thursday, "Jueves", this.thursdayStreamers);
-          this.countScheduledHours(this.friday, res.friday, "Viernes", this.fridayStreamers);
-          this.countScheduledHours(this.saturday, res.saturday, "Sábado", this.saturdayStreamers);
-  
-          this.usersTooltips = [this.mondayStreamers, this.tuesdayStreamers, this.wednesdayStreamers, this.thursdayStreamers, this.fridayStreamers, this.saturdayStreamers];
-          this.isLoading.set(false)
-        },
-        error: err => {
-          console.log(err)
-        }
-      })
-    }
+    this.agendaService.getScheduledHours(this.decoded.group).subscribe({
+      next: (res: any) => {
+        this.countScheduledHours(this.monday, res.monday, "Lunes", this.mondayStreamers);
+        this.countScheduledHours(this.tuesday, res.tuesday, "Martes", this.tuesdayStreamers);
+        this.countScheduledHours(this.wednesday, res.wednesday, "Miércoles", this.wednesdayStreamers);
+        this.countScheduledHours(this.thursday, res.thursday, "Jueves", this.thursdayStreamers);
+        this.countScheduledHours(this.friday, res.friday, "Viernes", this.fridayStreamers);
+        this.countScheduledHours(this.saturday, res.saturday, "Sábado", this.saturdayStreamers);
+
+        this.usersTooltips = [this.mondayStreamers, this.tuesdayStreamers, this.wednesdayStreamers, this.thursdayStreamers, this.fridayStreamers, this.saturdayStreamers];
+        this.isLoading.set(false)
+      },
+      error: err => {
+        console.log(err)
+      }
+    })
   }
 
   countScheduledHours(dayWithHours: Map<string, number>, responseDay: any, dayName: string, usersDay: Map<string, any[]>) {
@@ -235,7 +234,7 @@ export class Agenda implements OnInit {
     }
     else {
       if(this.selectedDay.day_name == 'Sábado' && this.userService.mana() >= this.vipHour()) {
-        this.schedule(this.vipHour())
+        this.schedule(this.vipHour(), true)
       }
       else if(this.selectedDay.day_name != 'Sábado' && this.userService.mana() >= this.normalHour()) {
         this.schedule(this.normalHour())
@@ -247,7 +246,7 @@ export class Agenda implements OnInit {
     }
   }
 
-  schedule(manaCost: number) {
+  schedule(manaCost: number, isVip: boolean = false) {
     this.agendaService.createSchedule(this.newSchedule).subscribe({
       next: (res: any) => {
         this.isLoading.update(value => !value)
@@ -255,8 +254,16 @@ export class Agenda implements OnInit {
         this.getScheduledHours();
 
         this.userService.mana.update(value => value - manaCost);
+        let user_id = this.newSchedule.user_id;
 
         this.userService.updateUser(this.newSchedule.user_id, {"actual_money": this.userService.mana()}).subscribe({
+          next: () => {
+            let scheduleReason = 'Agendar hora'
+            if(isVip) {
+              scheduleReason = 'Agendar hora VIP'
+            }
+            this.createNewHistory({quantity: -manaCost, reason: scheduleReason, user_id: user_id});
+          },
           error: err => {
             console.log(err)
           }
@@ -304,7 +311,6 @@ export class Agenda implements OnInit {
   }
 
   getMyScheduledHours() {
-    
     if(this.user){
       this.agendaService.getScheduledHoursByUser(this.user).subscribe({
         next: (res: any) => {
@@ -344,12 +350,14 @@ export class Agenda implements OnInit {
 
     this.agendaService.deleteOneHourScheduled(this.scheduleToDelete.user_id, this.scheduleToDelete.day.day_id, this.scheduleToDelete.hour.hour_id).subscribe({
       next: (res: any) => {
-
         if(this.todayDate.getDay() < dayToCancel) {
           if(res.data.day.day_name == 'Sábado') {
             this.userService.mana.update(value => value + this.vipHour());
     
             this.userService.updateUser(this.scheduleToDelete.user_id, {"actual_money": this.userService.mana()}).subscribe({
+              next: (res) => {
+                this.createNewHistory({quantity: this.vipHour(), reason: 'Cancelar hora VIP', user_id: this.scheduleToDelete.user_id});
+              },
               error: err => {
                 console.log(err)
               }
@@ -359,6 +367,9 @@ export class Agenda implements OnInit {
             this.userService.mana.update(value => value + this.normalHour());
     
             this.userService.updateUser(this.scheduleToDelete.user_id, {"actual_money": this.userService.mana()}).subscribe({
+              next: () => {
+                this.createNewHistory({quantity: this.normalHour(), reason: 'Cancelar hora', user_id: this.scheduleToDelete.user_id});
+              },
               error: err => {
                 console.log(err)
               }
@@ -369,6 +380,14 @@ export class Agenda implements OnInit {
         this.getScheduledHours();
         this.getMyScheduledHours();
       },
+      error: err => {
+        console.log(err)
+      }
+    })
+  }
+
+  createNewHistory(newMoneyHistory: MoneyHistoryDTO) {
+    this.moneyHistoryService.createMoneyHistory(newMoneyHistory).subscribe({
       error: err => {
         console.log(err)
       }

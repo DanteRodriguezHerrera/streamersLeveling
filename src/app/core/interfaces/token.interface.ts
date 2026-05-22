@@ -1,6 +1,6 @@
 export interface TokenPayload {
   role: string;
-  group: string | null;
+  group: string;
   name: string;
   iat: number;
 }

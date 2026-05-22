@@ -1,5 +1,6 @@
 export const environment = {
     production: true,
     apiUrl: 'https://api.streamersleveling.com',
-    redirect_uri: 'https://streamersleveling.com/login'
+    redirect_uri: 'https://streamersleveling.com/login',
+    parent: 'streamersleveling.com'
 };
