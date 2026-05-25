@@ -1,10 +1,12 @@
 .menu {
-    background: #ADB5BD;
+    background: #5914c0;
     height: 50px;
     display: flex;
     font-size: 1.5rem;
     z-index: 99;
     position: relative;
+    color: #4DD9FF;
+    box-shadow: 0px 0px 15px #4DD9FF;
 
     .options {
         width: 85%;
@@ -30,7 +32,6 @@
         
         svg {
             width: 30%;
-            color: #0695c0;
         }
 
         button {
@@ -45,7 +46,6 @@
             
             svg {
                 width: 30%;
-                color: #0695c0;
             }
         }
     }
@@ -66,16 +66,23 @@
 }
 
 @mixin subMenu () {
-    background: #ADB5BD;
+    background: #5914c0;
     font-size: 1.5rem;
     position: absolute;
     top: 49px;
     visibility: hidden;
+    color: #4DD9FF;
     z-index: 98;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
 
     p {
-        margin: 15px;
+        padding: 15px;
         cursor: pointer;
+
+        &:hover {
+            border: 1px solid #4DD9FF;
+        }
     }
 }
 
@@ -98,6 +105,7 @@
 }
 
 .show {
+    top: 49px;
     animation: show 0.2s ease-in forwards;
 }
 

@@ -89,8 +89,7 @@ export class Menu implements OnInit {
           }
           
           if(res.status === 204) {
-            localStorage.clear()
-            this.router.navigateByUrl("/login")
+            this.logout()
           }
         },
         error: err => {
@@ -99,7 +98,7 @@ export class Menu implements OnInit {
       })
     }
     else {
-      this.router.navigateByUrl("/login")
+      this.logout()
     }
   }
 
@@ -177,5 +176,10 @@ export class Menu implements OnInit {
 
   cancelEdit() {
     this.editingIndex = null;
+  }
+
+  logout() {
+    localStorage.clear();
+    this.router.navigateByUrl('/login')
   }
 }

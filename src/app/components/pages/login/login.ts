@@ -110,15 +110,35 @@ export class Login implements OnInit {
 
   validatedToken(twitchToken: string, refreshToken: string = '') {
     this.twitchService.validateTwitchToken(twitchToken).subscribe({
-      next: (res: validationTokenResponse) => {       
+      next: (resValidation: validationTokenResponse) => {
         if(this.userExists) {
           this.router.navigateByUrl("/agenda")
         }
         else {
-          this.newUserInfo.twitch_id = res.user_id;
-          this.newUserInfo.expires_in = res.expires_in;
-          this.newUserInfo.channel_name = res.login;
-          this.registerNewUser()
+          this.newUserInfo.channel_name = resValidation.login;
+
+          this.userService.getUserByChannelName(resValidation.login).subscribe({
+            next: (res) => {
+              console.log(res)
+              if(res.status === 200){
+                localStorage.setItem('user', res.data.user_id)
+                localStorage.setItem('twitchAuthToken', res.data.access_token)
+                if(res.jwt_token){
+                  localStorage.setItem('jwtToken', res.jwt_token)
+                  this.verifyUserExists();
+                }
+              }
+              else if(res.status === 404) {
+                this.newUserInfo.twitch_id = resValidation.user_id;
+                this.newUserInfo.expires_in = resValidation.expires_in;
+                this.registerNewUser()
+              }
+            },
+            error: err => {
+              console.log(err)
+            }
+          })
+
         }
       },
       error: () => {        
