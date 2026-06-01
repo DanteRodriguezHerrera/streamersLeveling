@@ -10,10 +10,16 @@ import { MoneyReasonService } from '../../../core/services/money-reason.service'
 import { MoneyReason, MoneyReasonResponse, MoneyReasonsResponse } from '../../../core/interfaces/money-reason.interface';
 import { FormsModule } from '@angular/forms';
 import { validationTokenResponse, tokenResponse } from '../../../core/interfaces/twitch.interface';
+import { AgendaService } from '../../../core/services/agenda.service';
+import { SearchLiveStreams } from '../../../core/interfaces/agenda.interface';
+
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-menu',
-  imports: [RouterLink, ClickOutsideDirective, FormsModule],
+  imports: [RouterLink, ClickOutsideDirective, FormsModule,  ToastModule],
+  providers: [MessageService],
   templateUrl: './menu.html',
   styleUrl: './menu.scss',
 })
@@ -22,13 +28,17 @@ export class Menu implements OnInit {
   private router = inject(Router);
   private userService = inject(UserService);
   private twitchService = inject(TwitchService);
-  private moneyReasonService = inject(MoneyReasonService)
+  private moneyReasonService = inject(MoneyReasonService);
+  private agendaService = inject(AgendaService);
+
+  constructor(private messageService: MessageService) {}
 
   activeSubmenu: 'rankings' | 'profile-options' | null = null;
   isFirstLoadRankings = true;
   isFirstLoadProfile = true;
 
   refreshTime: number = 30 * 60000; // mili segundos a minutos
+  checkLiveStreamersTime: number = 60 * 60000;
 
   mana = this.userService.mana;
 
@@ -57,6 +67,10 @@ export class Menu implements OnInit {
     setInterval(() => {
       this.verifyUserExists()
     }, this.refreshTime)
+    
+    setInterval(() => {
+      this.checkLiveStreamers();
+    }, this.checkLiveStreamersTime)
   }
 
   toggleSubmenu(name: 'rankings' | 'profile-options') {
@@ -181,5 +195,29 @@ export class Menu implements OnInit {
   logout() {
     localStorage.clear();
     this.router.navigateByUrl('/login')
+  }
+
+  checkLiveStreamers() {
+    const nowDate: Date = new Date();
+
+    const searchLiveStreams: SearchLiveStreams = {
+      group_id: this.decoded.group,
+      day_name: nowDate.toLocaleDateString("es-MX", {weekday: 'long'})[0].toUpperCase() + nowDate.toLocaleDateString("es-MX", {weekday: 'long'}).slice(1),
+      hour_name: `${nowDate.getHours()}:00`
+    }
+
+    this.agendaService.getLiveStreams(searchLiveStreams).subscribe({
+      next: (res) => {
+        if(res.data.live.length !== 0) {
+          this.messageService.add({ severity: 'info', summary: 'Streamers en vivo', detail: 'Ve y apoya a los streamers agendados', life: 5000 });
+        }
+        else {
+          this.messageService.add({ severity: 'info', summary: 'No hay streamers agendados', detail: 'Espera la siguiente hora y checa de nuevo la sección de apoyo', life: 5000 });
+        }
+      },
+      error: err => {
+        console.error(err)
+      }
+    })
   }
 }

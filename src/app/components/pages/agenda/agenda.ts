@@ -16,13 +16,19 @@ import { MoneyReasonsResponse } from '../../../core/interfaces/money-reason.inte
 import { MoneyHistoryDTO } from '../../../core/interfaces/money-history.interface';
 import { MoneyHistoryService } from '../../../core/services/money-history.service';
 
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
+
 @Component({
   selector: 'app-agenda',
-  imports: [TimeFormatPipe, FormsModule, NoGroup],
+  imports: [TimeFormatPipe, FormsModule, NoGroup, ToastModule],
+  providers: [MessageService],
   templateUrl: './agenda.html',
   styleUrl: './agenda.scss',
 })
 export class Agenda implements OnInit {
+
+  constructor(private messageService: MessageService) {}
   
   private agendaService = inject(AgendaService);
   private dayService = inject(DayService);
@@ -262,6 +268,7 @@ export class Agenda implements OnInit {
             if(isVip) {
               scheduleReason = 'Agendar hora VIP'
             }
+            this.messageService.add({ severity: 'success', summary: 'Se agendo la hora correctamente', life: 5000 })
             this.createNewHistory({quantity: -manaCost, reason: scheduleReason, user_id: user_id});
           },
           error: err => {
@@ -376,6 +383,8 @@ export class Agenda implements OnInit {
             })
           }
         }
+
+        this.messageService.add({ severity: 'success', summary: 'Se cancelo la hora correctamente', life: 5000 })
 
         this.getScheduledHours();
         this.getMyScheduledHours();

@@ -10,10 +10,7 @@ import { TwitchService } from '../../../core/services/twitch.service';
 
 @Component({
   selector: 'app-live-streamers',
-  imports: [
-    RouterLink,
-    NoGroup
-  ],
+  imports: [NoGroup],
   templateUrl: './live-streamers.html',
   styleUrl: './live-streamers.scss',
 })

@@ -22,7 +22,7 @@
                         <i style="color: red;" class="bi bi-circle-fill"></i>
                     </h2>
                     @for (channel of liveChannels(); track $index) {
-                    <div class="channels" routerLink="/stream/{{channel.user.channel_name}}" style="cursor: pointer">
+                    <div class="channels" style="cursor: pointer">
                         <img src="{{channel.profile_photo}}" alt="Profile Photo">
                         <h2>{{channel.display_name}}</h2>
                     </div>
