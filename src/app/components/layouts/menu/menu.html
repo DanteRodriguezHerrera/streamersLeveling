@@ -27,12 +27,12 @@
     </section>
 </div>
 
-<div class="rankings" [class.show]="activeSubmenu === 'rankings'" [class.hide]="!isFirstLoadRankings && activeSubmenu !== 'rankings'" [class.rankings-superadmin]="decoded.role === 'superadmin'">
+<div class="rankings" [class.show]="activeSubmenu === 'rankings'" [class.hide]="!isFirstLoadRankings() && activeSubmenu !== 'rankings'" [class.rankings-superadmin]="decoded.role === 'superadmin'">
     <p routerLink="global-ranking">Global</p>
     <p routerLink="group-ranking">Grupal</p>
 </div>
 
-<div class="profile-options" [class.show]="activeSubmenu === 'profile-options'" [class.hide]="!isFirstLoadProfile && activeSubmenu !== 'profile-options'">
+<div class="profile-options" [class.show]="activeSubmenu === 'profile-options'" [class.hide]="!isFirstLoadProfile() && activeSubmenu !== 'profile-options'">
     <p routerLink="profile">Historial</p>
     <p routerLink="help">Ayuda</p>
     <p routerLink="privacy-notice">Aviso de <br> privacidad</p>
@@ -99,4 +99,4 @@
     </div>
 </dialog>
 
-<p-toast />
+ <p-toast position="top-left" />

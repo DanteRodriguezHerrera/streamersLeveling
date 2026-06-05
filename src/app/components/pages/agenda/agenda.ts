@@ -259,22 +259,14 @@ export class Agenda implements OnInit {
 
         this.getScheduledHours();
 
-        this.userService.mana.update(value => value - manaCost);
         let user_id = this.newSchedule.user_id;
 
-        this.userService.updateUser(this.newSchedule.user_id, {"actual_money": this.userService.mana()}).subscribe({
-          next: () => {
-            let scheduleReason = 'Agendar hora'
-            if(isVip) {
-              scheduleReason = 'Agendar hora VIP'
-            }
-            this.messageService.add({ severity: 'success', summary: 'Se agendo la hora correctamente', life: 5000 })
-            this.createNewHistory({quantity: -manaCost, reason: scheduleReason, user_id: user_id});
-          },
-          error: err => {
-            console.log(err)
-          }
-        })
+        let scheduleReason = 'Agendar hora'
+        if(isVip) {
+          scheduleReason = 'Agendar hora VIP'
+        }
+        this.messageService.add({ severity: 'success', summary: 'Se agendo la hora correctamente', life: 5000 })
+        this.createNewHistory({quantity: -manaCost, reason: scheduleReason, user_id: user_id});
 
         this.clearDaySelected();
       },
@@ -358,29 +350,11 @@ export class Agenda implements OnInit {
     this.agendaService.deleteOneHourScheduled(this.scheduleToDelete.user_id, this.scheduleToDelete.day.day_id, this.scheduleToDelete.hour.hour_id).subscribe({
       next: (res: any) => {
         if(this.todayDate.getDay() < dayToCancel) {
-          if(res.data.day.day_name == 'Sábado') {
-            this.userService.mana.update(value => value + this.vipHour());
-    
-            this.userService.updateUser(this.scheduleToDelete.user_id, {"actual_money": this.userService.mana()}).subscribe({
-              next: (res) => {
-                this.createNewHistory({quantity: this.vipHour(), reason: 'Cancelar hora VIP', user_id: this.scheduleToDelete.user_id});
-              },
-              error: err => {
-                console.log(err)
-              }
-            })
+          if(res.data.day.day_name == 'Sábado') {    
+            this.createNewHistory({quantity: this.vipHour(), reason: 'Cancelar hora VIP', user_id: this.scheduleToDelete.user_id});
           }
           else if(res.data.day.day_name != 'Sábado') {
-            this.userService.mana.update(value => value + this.normalHour());
-    
-            this.userService.updateUser(this.scheduleToDelete.user_id, {"actual_money": this.userService.mana()}).subscribe({
-              next: () => {
-                this.createNewHistory({quantity: this.normalHour(), reason: 'Cancelar hora', user_id: this.scheduleToDelete.user_id});
-              },
-              error: err => {
-                console.log(err)
-              }
-            })
+            this.createNewHistory({quantity: this.normalHour(), reason: 'Cancelar hora', user_id: this.scheduleToDelete.user_id});
           }
         }
 
@@ -397,6 +371,18 @@ export class Agenda implements OnInit {
 
   createNewHistory(newMoneyHistory: MoneyHistoryDTO) {
     this.moneyHistoryService.createMoneyHistory(newMoneyHistory).subscribe({
+      next: () => {
+        if(this.user) {
+          this.userService.getUser(this.user).subscribe({
+            next: (res) => {
+              this.userService.mana.set(res.data.actual_money)
+            },
+            error: err => {
+              console.log(err)
+            }
+          })
+        }
+      },
       error: err => {
         console.log(err)
       }
