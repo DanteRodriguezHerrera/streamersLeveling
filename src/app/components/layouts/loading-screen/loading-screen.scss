@@ -1,0 +1,155 @@
+.loading {
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    color: #4DD9FF;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(27, 31, 47, 0.5);
+    overflow: hidden;
+    font-family: monospace;
+}
+
+.l00 { left: calc(100% + 20px); }
+.l05 { left: 5%; }
+.l10 { left: 10%; }
+.l15 { left: 15%; }
+.l20 { left: 20%; }
+.l25 { left: 25%; }
+.l30 { left: 30%; }
+.l35 { left: 35%; }
+.l40 { left: 40%; }
+.l45 { left: 45%; }
+.l50 { left: 50%; }
+.l55 { left: 55%; }
+.l60 { left: 60%; }
+.l65 { left: 65%; }
+.l70 { left: 70%; }
+.l75 { left: 75%; }
+.l80 { left: 80%; }
+.l85 { left: 85%; }
+.l90 { left: 90%; }
+.l95 { left: 95%; }
+.l100 { left: calc(100% - 20px); }
+
+.t180 { top: -680px; }
+.t190 { top: -690px; }
+.t200 { top: -400px; }
+.t290 { top: -790px; }
+.t300 { top: -300px; }
+.t320 { top: -320px; }
+.t380 { top: -680px; }
+.t400 { top: -800px; }
+.t420 { top: -720px; }
+.t500 { top: -500px; }
+.t520 { top: -520px; }
+.t530 { top: -730px; }
+.t600 { top: -600px; }
+.t650 { top: -650px; }
+.t700 { top: -700px; }
+.t800 { top: -800px; }
+.t900 { top: -900px; }
+
+.letter {
+    --fall-duration: 5s;
+    --fall-delay: 0s;
+
+    position: absolute;
+
+    animation:
+        animate-position var(--fall-duration) linear infinite;
+
+    animation-delay: var(--fall-delay);
+}
+
+/* Velocidades diferentes */
+.letter:nth-child(6n + 1) {
+    --fall-duration: 4s;
+}
+
+.letter:nth-child(6n + 2) {
+    --fall-duration: 5s;
+}
+
+.letter:nth-child(6n + 3) {
+    --fall-duration: 6s;
+}
+
+.letter:nth-child(6n + 4) {
+    --fall-duration: 7s;
+}
+
+.letter:nth-child(6n + 5) {
+    --fall-duration: 8s;
+}
+
+.letter:nth-child(6n) {
+    --fall-duration: 9s;
+}
+
+/* Inician en distintos puntos de la animación */
+.letter:nth-child(3n) {
+    --fall-delay: -1s;
+}
+
+.letter:nth-child(3n + 1) {
+    --fall-delay: -3s;
+}
+
+.letter:nth-child(3n + 2) {
+    --fall-delay: -5s;
+}
+
+.d2 {
+    --fall-delay: -4s;
+}
+
+@keyframes animate-position {
+    from {
+        transform: translateY(0);
+    }
+
+    to {
+        transform: translateY(calc(100vh + 1000px));
+    }
+}
+
+.letter div {
+    width: 20px;
+    height: 140px;
+    position: relative;
+    color: #4DD9FF;
+}
+
+.big div {
+    width: 40px !important;
+    height: 300px !important;
+    font-size: 24px !important;
+}
+
+.letter div:before {
+    position: absolute;
+    inset: 0;
+
+    content: "CARGANDO";
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+
+    color: #4DD9FF;
+    filter: brightness(2.5) blur(.5px);
+    letter-spacing: 2px;
+}
+
+/* CAÍDA */
+@keyframes animate-position {
+    to {
+        top: calc(100% + 40px);
+    }
+}

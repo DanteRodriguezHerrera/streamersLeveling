@@ -1,16 +1,20 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TwitchService } from '../../../core/services/twitch.service';
 import { tokenResponse, validationTokenResponse } from '../../../core/interfaces/twitch.interface';
 import { User, UserDTO, UserResponse } from '../../../core/interfaces/user.interface';
 import { UserService } from '../../../core/services/user.service';
 import { environment } from '../../../../environments/environment';
+import { LoadingScreen } from '../../layouts/loading-screen/loading-screen';
+import { MessageService } from 'primeng/api';
+import { Toast } from 'primeng/toast';
 
 @Component({
   selector: 'app-login',
-  imports: [],
+  imports: [LoadingScreen, Toast],
   templateUrl: './login.html',
   styleUrl: './login.scss',
+  providers: [MessageService]
 })
 export class Login implements OnInit {
 
@@ -18,6 +22,8 @@ export class Login implements OnInit {
   private router = inject(Router);
   private twitchService = inject(TwitchService);
   private userService = inject(UserService);
+
+  constructor(private messageService: MessageService) {}
 
   redirect_uri: string = environment.redirect_uri;
 
@@ -53,12 +59,16 @@ export class Login implements OnInit {
       role_name: ''
     }
   }
+
+  isLoading = signal<boolean>(false);
   
   ngOnInit(): void {
     this.verifyUserExists()
   }
 
   verifyUserExists() {
+
+    this.isLoading.set(true)
 
     const userId = localStorage.getItem('user');
 
@@ -78,6 +88,7 @@ export class Login implements OnInit {
           if(res.status === 204) {
             localStorage.clear()
             this.router.navigateByUrl("/login")
+            this.isLoading.set(false)
           }
         },
         error: err => {
@@ -90,6 +101,7 @@ export class Login implements OnInit {
         if(params['code'] !== undefined){
           this.getAuthorization(params['code'])
         }
+        this.isLoading.set(false)
       })
     }
   }
@@ -119,7 +131,6 @@ export class Login implements OnInit {
 
           this.userService.getUserByChannelName(resValidation.login).subscribe({
             next: (res) => {
-              console.log(res)
               if(res.status === 200){
                 localStorage.setItem('user', res.data.user_id)
                 localStorage.setItem('twitchAuthToken', res.data.access_token)
@@ -154,6 +165,7 @@ export class Login implements OnInit {
 
         localStorage.setItem('user', res.data.user_id);
         localStorage.setItem('twitchAuthToken', this.newUserInfo.access_token);
+        this.messageService.add({ severity: 'info', summary: 'Registro exitoso', detail: 'Se registro el usuario correctamente', life: 5000 });
         if(res.jwt_token){
           localStorage.setItem('jwtToken', res.jwt_token)
         }

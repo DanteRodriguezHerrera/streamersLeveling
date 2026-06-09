@@ -2,11 +2,16 @@
     color: #4DD9FF;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-content: space-evenly;
     text-align: center;
+    flex-wrap: wrap;
     font-size: xx-large;
     width: 100%;
     height: calc(100% - 50px);
+
+    p {
+        width: 100%;;
+    }
 
     a:link, a:visited {
         color: #4DD9FF;

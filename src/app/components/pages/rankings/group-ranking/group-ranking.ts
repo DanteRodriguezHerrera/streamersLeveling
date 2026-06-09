@@ -27,7 +27,25 @@ export class GroupRanking {
     name: ''
   }
 
-  userId: string = '';
+  user: User = {
+    user_id: '',
+    twitch_id: '',
+    role_id: '',
+    group_id: '',
+    access_token: '',
+    expires_in: 0,
+    refresh_token: '',
+    actual_money: 0,
+    channel_name: '',
+    group: {
+      group_id: '',
+      group_name: ''
+    },
+    role: {
+      role_id: '',
+      role_name: ''
+    }
+  };
 
   ngOnInit(): void {
 
@@ -55,14 +73,14 @@ export class GroupRanking {
     })
   }
 
-  getExpulsionUser(user_id: string) {
-    this.userId = user_id;
+  getExpulsionUser(user: User) {
+    this.user = user;
   }
 
   confirmExpulsion() {
     this.isLoading.update(value => !value)
 
-    this.usersService.updateUser(this.userId, {"group_id": null}).subscribe({
+    this.usersService.updateUser(this.user.user_id, {"group_id": 'null', "role_id": "c3f283bf-1ac3-4c47-a74e-50fb07ad02e7"}).subscribe({
       next: () => {
         this.getRanking();
       },
