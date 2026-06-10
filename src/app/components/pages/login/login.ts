@@ -61,8 +61,18 @@ export class Login implements OnInit {
   }
 
   isLoading = signal<boolean>(false);
+
+  userId: string | null = '';
+  twitchToken: string | null = '';
   
   ngOnInit(): void {
+    this.userId = localStorage.getItem('user');
+    this.twitchToken = localStorage.getItem('twitchAuthToken');
+
+    if(!this.userId !== null || !this.twitchToken) {
+      localStorage.clear();
+    }
+
     this.verifyUserExists()
   }
 
@@ -70,10 +80,8 @@ export class Login implements OnInit {
 
     this.isLoading.set(true)
 
-    const userId = localStorage.getItem('user');
-
-    if(userId !== null) {
-      this.userService.getUser(userId).subscribe({
+    if(this.userId !== null && this.twitchToken) {
+      this.userService.getUser(this.userId).subscribe({
         next: (res: UserResponse) => {
           if(res.status === 201) {
             this.userExists = true;
@@ -93,6 +101,7 @@ export class Login implements OnInit {
         },
         error: err => {
           console.log(err)
+          this.isLoading.set(false)
         }
       })
     }

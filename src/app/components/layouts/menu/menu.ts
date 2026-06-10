@@ -167,6 +167,11 @@ export class Menu implements OnInit {
       },
       error: (err) => {
         console.log(err)
+        if(err.status === 401){
+          localStorage.clear();
+          this.router.navigateByUrl("/login");
+          return;
+        }
         this.refreshNewToken(refreshToken)
       }
     })
