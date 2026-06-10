@@ -112,7 +112,7 @@ export class Login implements OnInit {
         this.newUserInfo.access_token = res.access_token;
         this.newUserInfo.refresh_token = res.refresh_token
 
-        this.validatedToken(res.access_token);
+        this.validatedToken(res.access_token, res.refresh_token);
       },
       error: err => {
         console.log(err)
@@ -121,6 +121,12 @@ export class Login implements OnInit {
   }
 
   validatedToken(twitchToken: string, refreshToken: string = '') {
+    if(!twitchToken) {
+      localStorage.clear();
+      this.isLoading.set(false)
+      return;
+    }
+
     this.twitchService.validateTwitchToken(twitchToken).subscribe({
       next: (resValidation: validationTokenResponse) => {
         if(this.userExists) {
@@ -133,10 +139,18 @@ export class Login implements OnInit {
             next: (res) => {
               if(res.status === 200){
                 localStorage.setItem('user', res.data.user_id)
-                localStorage.setItem('twitchAuthToken', res.data.access_token)
+                localStorage.setItem('twitchAuthToken', twitchToken)
                 if(res.jwt_token){
                   localStorage.setItem('jwtToken', res.jwt_token)
-                  this.verifyUserExists();
+                  this.userService.updateUser(res.data.user_id, {'access_token': twitchToken, 'refresh_token': refreshToken}).subscribe({
+                    next: (res) => {
+                      console.log(res)
+                      this.router.navigateByUrl("/agenda")
+                    },
+                    error: err => {
+                      console.log(err)
+                    }
+                  })
                 }
               }
               else if(res.status === 404) {

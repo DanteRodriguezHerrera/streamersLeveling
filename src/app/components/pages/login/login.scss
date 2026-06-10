@@ -28,20 +28,20 @@
             justify-content: center;
             align-content: space-evenly;
             text-shadow: 0px 0px 20px rgba(173, 237, 255, 0.9);
+            
+            h1, h3 {
+                width: 100%;
+            }
 
-            button {
+            a {
                 background: linear-gradient(90deg, #5A2EA6, #4DD9FF, #5A2EA6 5%, );
                 background-size: 400% 400%;
-                font-size: large;
                 border-radius: 6px;
                 animation: lightLeftToRight 10s ease infinite;
                 cursor: pointer;
                 padding: 1% 5%;
-
-                a {
-                    color: white;
-                    text-decoration: none;
-                }
+                color: white;
+                text-decoration: none;
             }
 
             @keyframes lightLeftToRight {
