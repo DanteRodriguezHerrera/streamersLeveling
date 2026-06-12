@@ -10,10 +10,11 @@ import { TokenPayload } from '../../../core/interfaces/token.interface';
 import { UserService } from '../../../core/services/user.service';
 import { UserResponse } from '../../../core/interfaces/user.interface';
 import { environment } from '../../../../environments/environment';
+import { LoadingScreen } from '../../layouts/loading-screen/loading-screen';
 
 @Component({
   selector: 'app-stream',
-  imports: [],
+  imports: [LoadingScreen],
   templateUrl: './stream.html',
   styleUrl: './stream.scss',
 })

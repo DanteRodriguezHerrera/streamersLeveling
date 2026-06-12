@@ -1,14 +1,14 @@
 import { Component, inject, signal } from '@angular/core';
-import { User, UserResponse, UsersResponse } from '../../../../core/interfaces/user.interface';
+import { User, UsersResponse } from '../../../../core/interfaces/user.interface';
 import { UserService } from '../../../../core/services/user.service';
 import { jwtDecode } from 'jwt-decode';
 import { TokenPayload } from '../../../../core/interfaces/token.interface';
-import { RouterLink } from '@angular/router';
 import { NoGroup } from '../../../layouts/no-group/no-group';
+import { LoadingScreen } from '../../../layouts/loading-screen/loading-screen';
 
 @Component({
   selector: 'app-group-ranking',
-  imports: [NoGroup],
+  imports: [NoGroup, LoadingScreen],
   templateUrl: './group-ranking.html',
   styleUrl: './group-ranking.scss',
 })

@@ -15,13 +15,14 @@ import { MoneyReasonService } from '../../../core/services/money-reason.service'
 import { MoneyReasonsResponse } from '../../../core/interfaces/money-reason.interface';
 import { MoneyHistoryDTO } from '../../../core/interfaces/money-history.interface';
 import { MoneyHistoryService } from '../../../core/services/money-history.service';
+import { LoadingScreen } from '../../layouts/loading-screen/loading-screen';
 
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-agenda',
-  imports: [TimeFormatPipe, FormsModule, NoGroup, ToastModule],
+  imports: [TimeFormatPipe, FormsModule, NoGroup, ToastModule, LoadingScreen],
   providers: [MessageService],
   templateUrl: './agenda.html',
   styleUrl: './agenda.scss',

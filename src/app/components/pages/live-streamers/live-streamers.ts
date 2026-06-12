@@ -1,16 +1,16 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import {RouterLink} from '@angular/router';
-import { UserTwitchInfo, UserTwitchInfoResponse } from '../../../core/interfaces/user.interface';
+import { UserTwitchInfoResponse } from '../../../core/interfaces/user.interface';
 import { NoGroup } from '../../layouts/no-group/no-group';
 import { TokenPayload } from '../../../core/interfaces/token.interface';
 import { jwtDecode } from 'jwt-decode';
 import { AgendaService } from '../../../core/services/agenda.service';
 import { LiveStreamersResponse, SearchLiveStreams, TodayStreams } from '../../../core/interfaces/agenda.interface';
 import { TwitchService } from '../../../core/services/twitch.service';
+import { LoadingScreen } from '../../layouts/loading-screen/loading-screen';
 
 @Component({
   selector: 'app-live-streamers',
-  imports: [NoGroup],
+  imports: [NoGroup, LoadingScreen],
   templateUrl: './live-streamers.html',
   styleUrl: './live-streamers.scss',
 })

@@ -1,10 +1,11 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { User, UsersResponse } from '../../../../core/interfaces/user.interface';
 import { UserService } from '../../../../core/services/user.service';
+import { LoadingScreen } from '../../../layouts/loading-screen/loading-screen';
 
 @Component({
   selector: 'app-global-ranking',
-  imports: [],
+  imports: [LoadingScreen],
   templateUrl: './global-ranking.html',
   styleUrl: './global-ranking.scss',
 })

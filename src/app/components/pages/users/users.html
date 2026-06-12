@@ -17,7 +17,12 @@
                 @for (user of users; track $index; let i = $index) {
                     <tr>
                         <td>{{i + 1}}</td>
-                        <td>{{user.group.group_name}}</td>
+                        @if(user.group_id === 'null'){
+                            <td>Sin grupo</td>
+                        }
+                        @else {
+                            <td>{{user.group.group_name}}</td>
+                        }
                         <td>{{user.channel_name}}</td>
                         <td>{{user.role.role_name}}</td>
                         <td>{{user.actual_money}}</td>
@@ -36,9 +41,7 @@
     </div>
 }
 @else {
-    <p style="color: white;">
-        Cargando...
-    </p>
+    <app-loading-screen />
 }
 
 <dialog id="my-dialog">

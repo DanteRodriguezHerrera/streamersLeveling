@@ -9,10 +9,11 @@ import { GroupsService } from '../../../core/services/group.service';
 import { RolesService } from '../../../core/services/rol.service';
 import { IGroup } from '../../../core/interfaces/groups.interface';
 import { IRole } from '../../../core/interfaces/role.interface';
+import { LoadingScreen } from '../../layouts/loading-screen/loading-screen';
 
 @Component({
   selector: 'app-users',
-  imports: [FormsModule],
+  imports: [FormsModule, LoadingScreen],
   templateUrl: './users.html',
   styleUrl: './users.scss',
 })
@@ -74,6 +75,7 @@ export class Users {
       this.usersService.getUsers().subscribe({
         next: (res: UsersResponse) => {
           this.users = res.data
+          console.log(this.users)
           this.isLoading.update(value => !value)
         },
         error: err => {

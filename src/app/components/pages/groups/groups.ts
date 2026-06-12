@@ -5,10 +5,11 @@ import { GroupsResponse } from '../../../core/interfaces/groups.interface';
 import { UserService } from '../../../core/services/user.service';
 import { UsersResponse } from '../../../core/interfaces/user.interface';
 import { forkJoin, map } from 'rxjs';
+import { LoadingScreen } from '../../layouts/loading-screen/loading-screen';
 
 @Component({
   selector: 'app-groups',
-  imports: [FormsModule],
+  imports: [FormsModule, LoadingScreen],
   templateUrl: './groups.html',
   styleUrl: './groups.scss',
 })
