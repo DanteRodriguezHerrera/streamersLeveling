@@ -104,4 +104,16 @@ export class Groups implements OnInit{
       }
     })
   }
+
+  createNewGroup() {
+    this.groupsService.createGroup().subscribe({
+      next: (res) => {
+        this.isLoading.set(true)
+        this.getGroups()
+      },
+      error: err => {
+        console.log(err)
+      }
+    })
+  }
 }

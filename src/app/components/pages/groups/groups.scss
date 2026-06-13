@@ -72,6 +72,10 @@
                             position: relative;
                             z-index: 2;
                             overflow: hidden;
+
+                            .bi {
+                                font-size: x-large;
+                            }
                             
                             &:hover {
                                 background: none;
@@ -112,6 +116,19 @@
                         }
                     }
                 }
+            }
+
+            .new-group {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100%;
+                width: 100%;
+                font-size: xx-large;
+                cursor: pointer;
+                background: none;
+                border: none;
+                color: #4DD9FF;
             }
         }
     }

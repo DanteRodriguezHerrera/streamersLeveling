@@ -153,7 +153,6 @@ export class Login implements OnInit {
                   localStorage.setItem('jwtToken', res.jwt_token)
                   this.userService.updateUser(res.data.user_id, {'access_token': twitchToken, 'refresh_token': refreshToken}).subscribe({
                     next: (res) => {
-                      console.log(res)
                       this.router.navigateByUrl("/agenda")
                     },
                     error: err => {

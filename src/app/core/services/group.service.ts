@@ -17,4 +17,8 @@ export class GroupsService {
       return this.http.get<GroupsResponse>(this.BASE_URL + "/groups");
     }
 
+    createGroup() : Observable<GroupResponse> {
+      return this.http.post<GroupResponse>(this.BASE_URL + "/groups", {})
+    }
+
 }
