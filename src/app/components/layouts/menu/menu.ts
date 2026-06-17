@@ -392,20 +392,22 @@ export class Menu implements OnInit {
     setInterval(() => {
       if(this.userId) {
         if(this.countMessage1() >= 10) {
-          let extraMana = this.countMessage1() >= 15 ? this.manaPerView() + 1 : this.manaPerView();
-          let extraReason = this.countMessage1() >= 15 ? `${this.commentPerView()} + extra - ${this.chat1()}` : `${this.commentPerView()} - ${this.chat1()}`;
-          let extraComment = this.countMessage1() >= 15 ?  `Apoyando a ${this.chat1()} y un extra` :  `Apoyando a ${this.chat1()}`;
+          let extraMana = Math.floor((this.countMessage1() - 10) / 5);
+          let totalMana = this.manaPerView() + extraMana;
+          let extraReason = extraMana > 0 ? `${this.commentPerView()} + ${extraMana} extra - ${this.chat1()}` : `${this.commentPerView()} - ${this.chat1()}`;
+          let extraComment = extraMana > 0 ? `Apoyando a ${this.chat1()} y ${extraMana} extra` : `Apoyando a ${this.chat1()}`;
 
-          this.createNewHistory({quantity: extraMana, reason: extraReason, user_id: this.userId});
-          this.messageService.add({ severity: 'info', summary: `Ganaste ${this.manaPerView()} mana`, detail: extraComment, sticky: true })
+          this.createNewHistory({quantity: totalMana, reason: extraReason, user_id: this.userId});
+          this.messageService.add({ severity: 'info', summary: `Ganaste ${totalMana} mana`, detail: extraComment, sticky: true })
         }
         if(this.countMessage2() >= 10) {
-          let extraMana = this.countMessage2() >= 15 ? this.manaPerView() + 1 : this.manaPerView();
-          let extraReason = this.countMessage2() >= 15 ? `${this.commentPerView()} + extra - ${this.chat1()}` : `${this.commentPerView()} - ${this.chat1()}`;
-          let extraComment = this.countMessage2() >= 15 ?  `Apoyando a ${this.chat1()} y un extra` :  `Apoyando a ${this.chat1()}`;
+          let extraMana = Math.floor((this.countMessage2() - 10) / 5);
+          let totalMana = this.manaPerView() + extraMana;
+          let extraReason = extraMana > 0 ? `${this.commentPerView()} + ${extraMana} extra - ${this.chat2()}` : `${this.commentPerView()} - ${this.chat2()}`;
+          let extraComment = extraMana > 0 ? `Apoyando a ${this.chat2()} y ${extraMana} extra` : `Apoyando a ${this.chat2()}`;
 
-          this.createNewHistory({quantity: extraMana, reason: extraReason, user_id: this.userId});
-          this.messageService.add({ severity: 'info', summary: `Ganaste ${this.manaPerView()} mana`, detail: extraComment, sticky: true })
+          this.createNewHistory({quantity: totalMana, reason: extraReason, user_id: this.userId});
+          this.messageService.add({ severity: 'info', summary: `Ganaste ${totalMana} mana`, detail: extraComment, sticky: true })
         }
       }
 
