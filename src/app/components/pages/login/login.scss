@@ -5,28 +5,27 @@
     justify-content: center;
     align-items: center;
 
+    background: center no-repeat url("../../../../assests/SLogin.png");
+
     .login-card {
         width: 40%;
         height: 50%;
-        background: white;
-        border-top: 15px solid #4DD9FF;
-        border-bottom: 15px solid #4DD9FF;
-        border-radius: 6px;
+        // border-radius: 6px;
         display: flex;
         justify-content: center;
         text-align: center;
-        color: #00CFFF;
-        background: #1B1F2F;
+        // color: #00CFFF;
+        background: transparent;
 
         .content-card {
             width: 95%;
             height: 100%;
-            border-left: 1px solid #4dd9ff;
-            border-right: 1px solid #4dd9ff;
+            // border-left: 1px solid #4dd9ff;
+            // border-right: 1px solid #4dd9ff;
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            align-content: space-evenly;
+            align-content: space-around;
             text-shadow: 0px 0px 20px rgba(173, 237, 255, 0.9);
             
             h1, h3 {
@@ -42,6 +41,7 @@
                 padding: 1% 5%;
                 color: white;
                 text-decoration: none;
+                font-size: 2rem;
             }
 
             @keyframes lightLeftToRight {

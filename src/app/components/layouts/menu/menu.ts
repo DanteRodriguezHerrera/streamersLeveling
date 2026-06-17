@@ -141,7 +141,10 @@ export class Menu implements OnInit {
           }
         },
         error: err => {
-          console.log(err)
+          this.messageService.add({ severity: 'error', summary: 'Error de verificación', detail: 'No se pudo verificar el usuario.', sticky: true });
+          if(err.status === 401 || err.status === 404){
+            this.logout()
+          }
         }
       })
     }
@@ -160,13 +163,13 @@ export class Menu implements OnInit {
               this.profileImage.set(res.data[0].profile_image_url);
             },
             error: err => {
-              console.log(err)
+              this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo obtener la información del perfil.', sticky: true });
             }
           })
         }
       },
       error: (err) => {
-        console.log(err)
+        this.messageService.add({ severity: 'error', summary: 'Error de validación', detail: 'No se pudo validar el token de Twitch.', sticky: true });
         if(err.status === 401){
           localStorage.clear();
           this.router.navigateByUrl("/login");
@@ -188,12 +191,12 @@ export class Menu implements OnInit {
 
           },
           error: err => {
-            console.log(err)
+            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo actualizar el token en la base de datos.', sticky: true });
           }
         })
       },
       error: err => {
-        console.log(err)
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo renovar el token de Twitch.', sticky: true });
       }
     })
   }
@@ -214,7 +217,7 @@ export class Menu implements OnInit {
         });
       },
       error: err => {
-        console.log(err)
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar las razones de maná.', sticky: true });
       }
     })
   }
@@ -232,7 +235,7 @@ export class Menu implements OnInit {
         this.getMoneyReason()
       },
       error: err => {
-        console.log(err)
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo editar el costo de maná.', sticky: true });
       }
     })
   }
@@ -249,7 +252,7 @@ export class Menu implements OnInit {
   checkLiveStreamers() {
 
     if((this.liveStreamersTime() / 60000) < 30) {
-      this.messageService.add({ severity: 'info', summary: 'Espera la siguiente hora', detail: 'Ve y apoya a los streamers agendados la siguiente hora', life: 5000 });
+      this.messageService.add({ severity: 'info', summary: 'Espera la siguiente hora', detail: 'Ve y apoya a los streamers agendados la siguiente hora', sticky: true });
     }
     else {
       const nowDate: Date = new Date();
@@ -263,7 +266,7 @@ export class Menu implements OnInit {
       this.agendaService.getLiveStreams(searchLiveStreams).subscribe({
         next: (res) => {
           if(res.data.live.length !== 0) {
-            this.messageService.add({ severity: 'info', summary: 'Streamers en vivo', detail: 'Ve y apoya a los streamers agendados', life: 5000 });
+            this.messageService.add({ severity: 'info', summary: 'Streamers en vivo', detail: 'Ve y apoya a los streamers agendados', sticky: true });
   
             res.data.live.forEach((channel, i) => {
               if(i === 0) {
@@ -278,11 +281,11 @@ export class Menu implements OnInit {
             this.startListenChat();
           }
           else {
-            this.messageService.add({ severity: 'info', summary: 'No hay streamers agendados', detail: 'Espera la siguiente hora y checa de nuevo la sección de apoyo', life: 5000 });
+            this.messageService.add({ severity: 'info', summary: 'No hay streamers agendados', detail: 'Espera la siguiente hora y checa de nuevo la sección de apoyo', sticky: true });
           }
         },
         error: err => {
-          console.error(err)
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudieron consultar los streamers en vivo.', sticky: true });
         }
       })
     }
@@ -374,12 +377,12 @@ export class Menu implements OnInit {
       if(this.userId) {
         if(this.countMessage1() >= 1 && this.isFirstGain1()) {
           this.createNewHistory({quantity: this.manaPerView(), reason: `${this.commentPerView()} - ${this.chat1()}`, user_id: this.userId});
-          this.messageService.add({ severity: 'info', summary: `Ganaste ${this.manaPerView()} mana`, detail: `Apoyando a ${this.chat1()}` })
+          this.messageService.add({ severity: 'info', summary: `Ganaste ${this.manaPerView()} mana`, detail: `Apoyando a ${this.chat1()}`, sticky: true })
           this.isFirstGain1.set(false)
         }
         if(this.countMessage2() >= 1 && this.isFirstGain2()) {
           this.createNewHistory({quantity: this.manaPerView(), reason: `${this.commentPerView()} - ${this.chat2()}`, user_id: this.userId});
-          this.messageService.add({ severity: 'info', summary: `Ganaste ${this.manaPerView()} mana`, detail: `Apoyando a ${this.chat1()}` })
+          this.messageService.add({ severity: 'info', summary: `Ganaste ${this.manaPerView()} mana`, detail: `Apoyando a ${this.chat1()}`, sticky: true })
           this.isFirstGain2.set(false)
         }
       }
@@ -394,7 +397,7 @@ export class Menu implements OnInit {
           let extraComment = this.countMessage1() >= 15 ?  `Apoyando a ${this.chat1()} y un extra` :  `Apoyando a ${this.chat1()}`;
 
           this.createNewHistory({quantity: extraMana, reason: extraReason, user_id: this.userId});
-          this.messageService.add({ severity: 'info', summary: `Ganaste ${this.manaPerView()} mana`, detail: extraComment })
+          this.messageService.add({ severity: 'info', summary: `Ganaste ${this.manaPerView()} mana`, detail: extraComment, sticky: true })
         }
         if(this.countMessage2() >= 10) {
           let extraMana = this.countMessage2() >= 15 ? this.manaPerView() + 1 : this.manaPerView();
@@ -402,7 +405,7 @@ export class Menu implements OnInit {
           let extraComment = this.countMessage2() >= 15 ?  `Apoyando a ${this.chat1()} y un extra` :  `Apoyando a ${this.chat1()}`;
 
           this.createNewHistory({quantity: extraMana, reason: extraReason, user_id: this.userId});
-          this.messageService.add({ severity: 'info', summary: `Ganaste ${this.manaPerView()} mana`, detail: extraComment })
+          this.messageService.add({ severity: 'info', summary: `Ganaste ${this.manaPerView()} mana`, detail: extraComment, sticky: true })
         }
       }
 
@@ -421,13 +424,13 @@ export class Menu implements OnInit {
               this.userService.mana.set(res.data.actual_money)
             },
             error: err => {
-              console.log(err)
+              this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo actualizar el maná.', sticky: true });
             }
           })
         }
       },
       error: err => {
-        console.log(err)
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo crear el registro de maná.', sticky: true });
       }
     })
   }

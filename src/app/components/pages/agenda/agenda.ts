@@ -266,7 +266,7 @@ export class Agenda implements OnInit {
         if(isVip) {
           scheduleReason = 'Agendar hora VIP'
         }
-        this.messageService.add({ severity: 'success', summary: 'Se agendo la hora correctamente', life: 5000 })
+        this.messageService.add({ severity: 'success', summary: 'Se agendo la hora correctamente', sticky: true })
         this.createNewHistory({quantity: -manaCost, reason: scheduleReason, user_id: user_id});
 
         this.clearDaySelected();
@@ -359,7 +359,7 @@ export class Agenda implements OnInit {
           }
         }
 
-        this.messageService.add({ severity: 'success', summary: 'Se cancelo la hora correctamente', life: 5000 })
+        this.messageService.add({ severity: 'success', summary: 'Se cancelo la hora correctamente', sticky: true })
 
         this.getScheduledHours();
         this.getMyScheduledHours();

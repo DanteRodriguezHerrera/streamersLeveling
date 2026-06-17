@@ -69,7 +69,7 @@ export class Login implements OnInit {
     this.userId = localStorage.getItem('user');
     this.twitchToken = localStorage.getItem('twitchAuthToken');
 
-    if(!this.userId !== null || !this.twitchToken) {
+    if(!this.userId || !this.twitchToken) {
       localStorage.clear();
     }
 
@@ -86,11 +86,6 @@ export class Login implements OnInit {
           if(res.status === 201) {
             this.userExists = true;
             this.validatedToken(res.data.access_token, res.data.refresh_token);
-
-            const jwtToken = localStorage.getItem('jwtToken');
-            if(jwtToken !== null) {
-              localStorage.setItem("jwtToken", jwtToken)
-            }
           }
           
           if(res.status === 204) {
@@ -100,7 +95,7 @@ export class Login implements OnInit {
           }
         },
         error: err => {
-          console.log(err)
+          this.messageService.add({ severity: 'error', summary: 'Error de verificación', detail: 'No se pudo verificar el usuario. Intenta de nuevo.', sticky: true });
           this.isLoading.set(false)
         }
       })
@@ -124,7 +119,8 @@ export class Login implements OnInit {
         this.validatedToken(res.access_token, res.refresh_token);
       },
       error: err => {
-        console.log(err)
+        this.messageService.add({ severity: 'error', summary: 'Error de autorización', detail: 'No se pudo completar la autorización con Twitch.', sticky: true });
+        this.isLoading.set(false)
       }
     })
   }
@@ -156,7 +152,8 @@ export class Login implements OnInit {
                       this.router.navigateByUrl("/agenda")
                     },
                     error: err => {
-                      console.log(err)
+                      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo actualizar el usuario.', sticky: true });
+                      this.isLoading.set(false)
                     }
                   })
                 }
@@ -168,7 +165,8 @@ export class Login implements OnInit {
               }
             },
             error: err => {
-              console.log(err)
+              this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo buscar el usuario en la base de datos.', sticky: true });
+              this.isLoading.set(false)
             }
           })
 
@@ -187,13 +185,14 @@ export class Login implements OnInit {
 
         localStorage.setItem('user', res.data.user_id);
         localStorage.setItem('twitchAuthToken', this.newUserInfo.access_token);
-        this.messageService.add({ severity: 'info', summary: 'Registro exitoso', detail: 'Se registro el usuario correctamente', life: 5000 });
+        this.messageService.add({ severity: 'info', summary: 'Registro exitoso', detail: 'Se registro el usuario correctamente', sticky: true });
         if(res.jwt_token){
           localStorage.setItem('jwtToken', res.jwt_token)
         }
       },
       error: err => {
-        console.log(err)
+        this.messageService.add({ severity: 'error', summary: 'Error de registro', detail: 'No se pudo registrar el usuario.', sticky: true });
+        this.isLoading.set(false)
       }
     })
   }
@@ -205,7 +204,8 @@ export class Login implements OnInit {
         this.validatedToken(res.access_token)
       },
       error: err => {
-        console.log(err)
+        this.messageService.add({ severity: 'error', summary: 'Sesión expirada', detail: 'No se pudo renovar la sesión. Vuelve a iniciar sesión.', sticky: true });
+        this.isLoading.set(false)
       }
     })
   }
