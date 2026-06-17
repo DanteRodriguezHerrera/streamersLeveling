@@ -10,11 +10,11 @@
     .login-card {
         width: 40%;
         height: 50%;
-        // border-radius: 6px;
+        border-radius: 6px;
         display: flex;
         justify-content: center;
         text-align: center;
-        // color: #00CFFF;
+        color: #00CFFF;
         background: transparent;
 
         .content-card {
@@ -25,7 +25,7 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            align-content: space-around;
+            align-content: end;
             text-shadow: 0px 0px 20px rgba(173, 237, 255, 0.9);
             
             h1, h3 {

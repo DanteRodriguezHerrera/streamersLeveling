@@ -52,5 +52,9 @@ export const routes: Routes = [
     {
         path: 'privacy-notice',
         loadComponent: () => import('./components/pages/privacy-notice/privacy-notice').then(pn => pn.PrivacyNotice)
+    },
+    {
+        path: 'how-it-works',
+        loadComponent: () => import('./components/pages/how-it-works/how-it-works').then(hiw => hiw.HowItWorks)
     }
 ];
