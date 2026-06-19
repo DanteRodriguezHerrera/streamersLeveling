@@ -39,7 +39,8 @@ export class GroupRanking {
     channel_name: '',
     group: {
       group_id: '',
-      group_name: ''
+      group_name: '',
+      clan_name: ''
     },
     role: {
       role_id: '',

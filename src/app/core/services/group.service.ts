@@ -21,4 +21,12 @@ export class GroupsService {
       return this.http.post<GroupResponse>(this.BASE_URL + "/groups", {})
     }
 
+    editGroup(group_id: string, clan_name: string) : Observable<GroupResponse> {
+      return this.http.patch<GroupResponse>(this.BASE_URL + "/groups/" + group_id + "/", { clanName: clan_name })
+    }
+
+    deleteGroup(group_id: string) : Observable<GroupResponse> {
+      return this.http.delete<GroupResponse>(this.BASE_URL + "/groups/" + group_id)
+    }
+
 }

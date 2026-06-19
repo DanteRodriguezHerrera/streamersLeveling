@@ -13,6 +13,7 @@
         display: flex;
         justify-content: space-evenly;
         overflow-x: auto;
+        overflow-y: hidden;
         scrollbar-color: #4DD9FF transparent ;
         
         .group-card {
@@ -24,11 +25,77 @@
             border-radius: 6px;
             text-align: center;
 
+            .tittle {
+                display: flex;
+                justify-content: space-evenly;
+                align-items: center;
+                padding: 5px 0;
+            }
+
             h1 {
                 height: 5%;
                 display: flex;
                 justify-content: center;
                 align-items: center;
+            }
+            
+            .buttons-member {
+                width: 25%;
+                display: flex;
+                justify-content: space-evenly;
+                
+                button {
+                    padding: 10px;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    background: #00CFFF;
+                    color: #00CFFF; 
+                    border: none;
+                    position: relative;
+                    z-index: 2;
+                    overflow: hidden;
+
+                    .bi {
+                        font-size: x-large;
+                    }
+                    
+                    &:hover {
+                        background: none;
+                    }
+
+                    &::after,
+                    &::before {
+                        content: "";
+                        position: absolute;
+                        height: 110%;
+                        width: 110%;
+                        top: 50%;
+                        left: 50%;
+                        z-index: -1;
+                        transform: translate(-50%, -50%);
+                    }
+
+                    &:hover::before, &.selected::before {
+                        background: conic-gradient(white 20deg, #00CFFF 120deg);
+                        animation: rotate 5s infinite linear;
+                    }
+
+                    &::after {
+                        background: #1B1F2F;
+                        height: 95%;
+                        width: 95%;
+                        border-radius: 6px;
+                    }
+
+                    @keyframes rotate {
+                        from {
+                            transform: translate(-50%, -50%) rotate(0deg);
+                        }
+                        to {
+                            transform: translate(-50%, -50%) rotate(360deg);
+                        }
+                    }
+                }
             }
 
             .group-members {
@@ -57,64 +124,6 @@
                         text-overflow: ellipsis;
                     }
 
-                    .buttons-member {
-                        width: 25%;
-                        display: flex;
-                        justify-content: space-evenly;
-                        
-                        button {
-                            padding: 10px;
-                            border-radius: 6px;
-                            cursor: pointer;
-                            background: #00CFFF;
-                            color: #00CFFF; 
-                            border: none;
-                            position: relative;
-                            z-index: 2;
-                            overflow: hidden;
-
-                            .bi {
-                                font-size: x-large;
-                            }
-                            
-                            &:hover {
-                                background: none;
-                            }
-
-                            &::after,
-                            &::before {
-                                content: "";
-                                position: absolute;
-                                height: 110%;
-                                width: 110%;
-                                top: 50%;
-                                left: 50%;
-                                z-index: -1;
-                                transform: translate(-50%, -50%);
-                            }
-
-                            &:hover::before, &.selected::before {
-                                background: conic-gradient(white 20deg, #00CFFF 120deg);
-                                animation: rotate 5s infinite linear;
-                            }
-
-                            &::after {
-                                background: #1B1F2F;
-                                height: 95%;
-                                width: 95%;
-                                border-radius: 6px;
-                            }
-
-                            @keyframes rotate {
-                                from {
-                                    transform: translate(-50%, -50%) rotate(0deg);
-                                }
-                                to {
-                                    transform: translate(-50%, -50%) rotate(360deg);
-                                }
-                            }
-                        }
-                    }
                 }
             }
 

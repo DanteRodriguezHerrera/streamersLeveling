@@ -7,9 +7,12 @@ import { UsersResponse } from '../../../core/interfaces/user.interface';
 import { forkJoin, map } from 'rxjs';
 import { LoadingScreen } from '../../layouts/loading-screen/loading-screen';
 
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { InputTextModule } from 'primeng/inputtext';
+
 @Component({
   selector: 'app-groups',
-  imports: [FormsModule, LoadingScreen],
+  imports: [FormsModule, LoadingScreen, FloatLabelModule, InputTextModule],
   templateUrl: './groups.html',
   styleUrl: './groups.scss',
 })
@@ -19,6 +22,7 @@ export class Groups implements OnInit{
   private usersService = inject(UserService)
 
   groups = signal<Map<string, any[]>>(new Map());
+  groupsIds = signal<string[]>([]);
 
   noGroupUsers = signal<any[]>([]);
 
@@ -29,14 +33,17 @@ export class Groups implements OnInit{
 
   selectedGroup: string = ''; 
 
+  isEditingName = signal<boolean>(false);
+  indexEditing: number = 0;
+  group_id: string = '';
+  actualName: string = '';
+  newName: string = '';
+
   ngOnInit(): void {
-    
-    this.getGroups();
+    this.getUserNoGroup();
   }
 
   getGroups() {
-
-    this.groups.set(new Map());
 
     this.groupsService.getGroups().subscribe({
       next: (res: GroupsResponse) => {
@@ -45,7 +52,9 @@ export class Groups implements OnInit{
           this.groupsOptions = res.data
         }, 0)
 
-        this.getUserNoGroup();
+        res.data.forEach(group => {
+          this.groupsIds().push(group.group_id)
+        });
 
         const requests = res.data.map(group =>
           this.usersService.getUsersByGroup(group.group_id)
@@ -55,14 +64,17 @@ export class Groups implements OnInit{
         forkJoin(requests).subscribe({
           next: (results) => {
             results.forEach(({ group, users }) => {
-              this.groups.update(value => value.set(group.group_name, users.data));
+              if(group.clan_name !== ''){
+                this.groups.update(value => value.set(group.clan_name, users.data));
+              }
+              else {
+                this.groups.update(value => value.set(group.group_name, users.data));
+              }
             });
-
             this.isLoading.set(false);
           },
           error: err => console.log(err)
         });
-
       },
       error: err => console.log(err)
     });
@@ -70,11 +82,17 @@ export class Groups implements OnInit{
 
   getUserNoGroup() {
 
+    this.groupsIds.set([])
+    this.groups.set(new Map());
+    this.isLoading.set(true)
+
     this.usersService.getUsersByGroup(null).subscribe({
       next: (res: UsersResponse) => {
         if(res.data.length !== 0) {
           this.groups.update(value => value.set('Sin grupo', res.data))
+          this.groupsIds().unshift("");
         }
+        this.getGroups();
       },
       error: err => {
         console.log(err)
@@ -108,8 +126,40 @@ export class Groups implements OnInit{
   createNewGroup() {
     this.groupsService.createGroup().subscribe({
       next: (res) => {
-        this.isLoading.set(true)
-        this.getGroups()
+        this.getUserNoGroup()
+      },
+      error: err => {
+        console.log(err)
+      }
+    })
+  }
+
+  deleteEmptyGroup(group_id: string) {
+    this.groupsService.deleteGroup(group_id).subscribe({
+      next: (res) => {
+        this.getUserNoGroup()
+      },
+      error: err => {
+        console.log(err)
+        this.isLoading.set(false)
+      }
+    })
+  }
+
+  startEditing(group_id: string, index: number, actual_name: string) {
+    this.isEditingName.set(true);
+    this.indexEditing = index;
+    this.group_id = group_id;
+    this.actualName = actual_name;
+  }
+
+  confirmEdition() {
+
+    this.groupsService.editGroup(this.group_id, this.newName).subscribe({
+      next: (res) => {
+        this.getUserNoGroup()
+        this.isEditingName.set(false)
+        this.newName = '';
       },
       error: err => {
         console.log(err)

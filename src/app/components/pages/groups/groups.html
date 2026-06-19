@@ -4,18 +4,52 @@
         <section class="groups">
             @for (group of groups().keys(); track $index; let i = $index) {
                 <div class="group-card">
+                    
+                    <div class="tittle">
+
+                        @if (isEditingName() === true && i === indexEditing) {
+                            <p-floatlabel variant="in">
+                                <input pInputText [(ngModel)]="newName" autocomplete="off" />
+                                <label for="in_label">{{actualName}}</label>
+                            </p-floatlabel>
+                        }
+                        @else {
+                            <h1>
+                                @if (i !== 0 || group === 'A') {
+                                    Grupo
+                                }
+                                {{group}}
+                            </h1>
+                        }
+
     
-                        <h1>
-                            @if (i !== 0 || group === 'A') {
-                                Grupo
-                            }
-                            {{group}}
-                        </h1>
-    
+                        @if(i !== 0) {
+                            <div class="buttons-member">
+                                @if (isEditingName() === true && i === indexEditing) {
+                                    <button class="edit-button" (click)="confirmEdition()">
+                                        <i class="bi bi-check-lg"></i>
+                                    </button>
+                                    <button class="edit-button" (click)="isEditingName.set(false); newName = ''" >
+                                        <i class="bi bi-x-lg"></i>
+                                    </button>
+                                }
+                                @else {
+                                    <button class="edit-button" (click)="startEditing(groupsIds()[i], i, group)">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                }
+                            </div>
+                        }
+                    </div>
+
                     <div class="group-members">
                         @if (groups().get(group)?.length === 0) {
-                            <div style="text-align: center; width: 100%; font-size: xx-large; margin-top: 5%;">
-                                Este grupo se encuentra vacío
+                            <div class="new-group" (click)="deleteEmptyGroup(groupsIds()[i])">
+                                <p>
+                                    Este grupo se encuentra vacío
+                                    ¿Borrar grupo? <br>
+                                    <i class="bi bi-trash"></i>
+                                </p>
                             </div>
                         }
                         @else {
