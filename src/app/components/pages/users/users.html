@@ -21,7 +21,14 @@
                             <td>Sin grupo</td>
                         }
                         @else {
-                            <td>{{user.group.group_name}}</td>
+                            <td>
+                                @if(user.group.clan_name !== '') {
+                                    {{user.group.clan_name}}
+                                }
+                                @else {
+                                    {{user.group.group_name}}
+                                }
+                            </td>
                         }
                         <td>{{user.channel_name}}</td>
                         <td>{{user.role.role_name}}</td>
@@ -47,11 +54,7 @@
 <dialog id="my-dialog">
     <div class="users-edition">
         <div class="content-card">
-            <h1>
-                Agendar hora de apoyo
-            </h1>
-
-            <div class="selectors">
+            <section class="selectors">
                 <div class="selector">
                     <h2>
                         Cambio de grupo
@@ -66,10 +69,9 @@
                         }
                     </select>
                 </div>
+            </section>
 
-            </div>
-
-            <div class="selectors">
+            <section class="selectors">
                 <div class="selector">
                     <h2>
                         Cambio de rol
@@ -84,8 +86,17 @@
                         }
                     </select>
                 </div>
+            </section>
 
-            </div>
+            <section class="selectors">
+                <div class="selector">
+                    <h2>Maná actual {{actualMana}}</h2>
+
+                    <p-floatlabel>
+                        <input id="username" pInputText [(ngModel)]="newMana" />
+                    </p-floatlabel>
+                </div>
+            </section>
 
             <div class="action-buttons">
                 <button class="confirm-button" command="close" commandfor="my-dialog" (click)="clearUserSelected()">Cancelar</button>

@@ -5,7 +5,13 @@
     @if(!isLoading()) {
         <div class="main-ranking">
             <fieldset class="ranking">
-                <legend>Ranking grupal</legend>
+                @if (group().clan_name === '') {
+                    <legend>Ranking grupo {{group().group_name}}</legend>
+                }
+                @else {
+                    <legend>Ranking grupo {{group().clan_name}}</legend>
+                }
+
                 <table>
                     <tr>
                         <th>Rango</th>

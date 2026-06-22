@@ -5,6 +5,8 @@ import { jwtDecode } from 'jwt-decode';
 import { TokenPayload } from '../../../../core/interfaces/token.interface';
 import { NoGroup } from '../../../layouts/no-group/no-group';
 import { LoadingScreen } from '../../../layouts/loading-screen/loading-screen';
+import { IGroup } from '../../../../core/interfaces/groups.interface';
+import { GroupsService } from '../../../../core/services/group.service';
 
 @Component({
   selector: 'app-group-ranking',
@@ -15,10 +17,17 @@ import { LoadingScreen } from '../../../layouts/loading-screen/loading-screen';
 export class GroupRanking {
 
   private usersService = inject(UserService);
+  private groupService = inject(GroupsService);
 
   isLoading = signal<boolean>(true)
 
   ranking: User[] = [];
+
+  group = signal<IGroup>({
+    group_id: '',
+    group_name: '',
+    clan_name: ''
+  })
 
   decoded: TokenPayload = {
     role: '',
@@ -57,9 +66,20 @@ export class GroupRanking {
       
       if(this.decoded.group !== 'null') {
         this.getRanking();
+        this.getGroup();
       }
     }
-    
+  }
+
+  getGroup() {
+    this.groupService.getGroup(this.decoded.group).subscribe({
+      next: (res) => {
+        this.group.set(res.data)
+      },
+      error: err => {
+        console.log(err)
+      }
+    })
   }
 
   getRanking() {

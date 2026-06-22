@@ -13,6 +13,10 @@ export class GroupsService {
 
     BASE_URL = environment.apiUrl;
 
+    getGroup(group_id: string) : Observable<GroupResponse> {
+      return this.http.get<GroupResponse>(this.BASE_URL + "/groups/" + group_id)
+    }
+
     getGroups() : Observable<GroupsResponse> {
       return this.http.get<GroupsResponse>(this.BASE_URL + "/groups");
     }

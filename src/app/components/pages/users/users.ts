@@ -10,10 +10,12 @@ import { RolesService } from '../../../core/services/rol.service';
 import { IGroup } from '../../../core/interfaces/groups.interface';
 import { IRole } from '../../../core/interfaces/role.interface';
 import { LoadingScreen } from '../../layouts/loading-screen/loading-screen';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
   selector: 'app-users',
-  imports: [FormsModule, LoadingScreen],
+  imports: [FormsModule, LoadingScreen, FloatLabelModule, InputTextModule],
   templateUrl: './users.html',
   styleUrl: './users.scss',
 })
@@ -51,8 +53,10 @@ export class Users {
   }
 
   selectedGroup: string = '';
-
   selectedRol: string = '';
+
+  actualMana: number = 0;
+  newMana: number = 0;
 
   decoded: TokenPayload = {
     role: '',
@@ -112,6 +116,7 @@ export class Users {
 
   getUserInfo(user: User) {
     this.selectedUser = user;
+    this.actualMana = user.actual_money;
   }
 
   clearUserSelected() {
@@ -148,6 +153,8 @@ export class Users {
     if(this.selectedRol !== '') {
       newUserInfo['role_id'] = this.selectedRol
     }
+
+    newUserInfo['actual_money'] = this.newMana;
 
     this.usersService.updateUser(this.selectedUser.user_id, newUserInfo).subscribe({
       next: (res: UserResponse) => {
