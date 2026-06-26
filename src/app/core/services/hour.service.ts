@@ -16,7 +16,7 @@ export class HourService {
       return this.http.get<HoursResponse>(this.BASE_URL + '/hours');
     }
 
-    getAvailableHours(user_id: string, group_id: string, day_id: string) {
-      return this.http.post<HoursResponse>(this.BASE_URL + '/hours/no-scheduled', {user_id, group_id, day_id})
+    getAvailableHours(user_id: string, group_id: string, day_id: string, currentTime: string) {
+      return this.http.post<HoursResponse>(this.BASE_URL + '/hours/no-scheduled', {user_id, group_id, day_id, currentTime})
     }
 }

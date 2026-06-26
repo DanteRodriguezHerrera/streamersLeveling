@@ -87,6 +87,7 @@ export class Agenda implements OnInit {
 
   mySchedule = signal<any[]>([]);
 
+  currentTime = new Date().toString()
   todayDate: Date = new Date();
   daysMap: any = {
     Lunes: 1,
@@ -200,7 +201,7 @@ export class Agenda implements OnInit {
 
   getDays() {
 
-    this.dayService.getDays().subscribe({
+    this.dayService.getDays(this.currentTime).subscribe({
       next: (res: DaysResponse) => {
         this.daysOptions = res.data;
       },
@@ -212,11 +213,10 @@ export class Agenda implements OnInit {
   }
 
   changeDay(day: Day) {
-
     this.newSchedule.day_id = day.day_id
 
     if(this.user) {
-      this.hourService.getAvailableHours(this.user, this.decoded.group!, day.day_id).subscribe({
+      this.hourService.getAvailableHours(this.user, this.decoded.group!, day.day_id, this.currentTime).subscribe({
         next: (res: HoursResponse) => {
           this.hoursOptionsFiltered.set(res.data)
         },

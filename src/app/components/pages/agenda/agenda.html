@@ -73,13 +73,17 @@
                     </select>
                 </div>
 
-                <fieldset>
+                <fieldset style="width: 20%;">
                     <legend>Costos de maná</legend>
                     <p>L - V: <b>{{normalHour()}}</b></p>
                     <p>Sábado: <b>{{vipHour()}}</b></p>
                 </fieldset>
             </div>
 
+            <fieldset>
+                <legend>Nota: </legend>
+                <p>Las horas mostradas son en zona horaria de Chihuahua (GMT-6)</p>
+            </fieldset>
             
             @if (selectedDay.day_id != '') {
                 <h3>

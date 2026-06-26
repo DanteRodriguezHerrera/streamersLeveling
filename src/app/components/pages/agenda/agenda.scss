@@ -213,18 +213,18 @@ dialog {
                     }
                 }
 
-                fieldset {
-                    width: 20%;
-                    border: #00CFFF 1px solid;
-                    text-align: center;
+            }
 
-                    legend {
-                        padding: 0 10px;
-                    }
+            fieldset {
+                border: #00CFFF 1px solid;
+                text-align: center;
 
-                    p {
-                        padding: 5px 0;
-                    }
+                legend {
+                    padding: 0 10px;
+                }
+
+                p {
+                    padding: 5px 0;
                 }
             }
 

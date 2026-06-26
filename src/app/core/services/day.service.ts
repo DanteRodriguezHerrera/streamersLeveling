@@ -12,7 +12,7 @@ export class DayService {
 
     BASE_URL = environment.apiUrl;
 
-    getDays() {
-      return this.http.get<DaysResponse>(this.BASE_URL + "/days")
+    getDays(currentTime: string) {
+      return this.http.get<DaysResponse>(this.BASE_URL + "/days/" + currentTime)
     }
 }
