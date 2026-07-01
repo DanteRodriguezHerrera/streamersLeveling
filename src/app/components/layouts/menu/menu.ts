@@ -63,6 +63,7 @@ export class Menu implements OnInit {
   // Connect the websocket to the Twitch IRC Server 
   chatObserver = new WebSocket("wss://irc-ws.chat.twitch.tv:443")
   joinChatsCommand: string = 'JOIN ';
+  partChatsCommand: string = 'PART '
   chat1 = signal<string>('');
   chat2 = signal<string>('');
   myChannel = signal<string>('');
@@ -251,6 +252,13 @@ export class Menu implements OnInit {
 
   checkLiveStreamers() {
 
+    this.chat1.set('');
+    this.chat2.set('');
+    this.countMessage1.set(0);
+    this.countMessage2.set(0);
+    this.isFirstGain1.set(true);
+    this.isFirstGain2.set(true);
+
     if((this.liveStreamersTime() / 60000) < 30) {
       this.messageService.add({ severity: 'info', summary: 'Espera la siguiente hora', detail: 'Ve y apoya a los streamers agendados la siguiente hora', sticky: true });
     }
@@ -276,9 +284,14 @@ export class Menu implements OnInit {
                 this.chat2.set(channel.user.channel_name);
               }
               this.joinChatsCommand += `#${channel.user.channel_name},`
+              this.partChatsCommand += `#${channel.user.channel_name},`
             });
-  
-            this.startListenChat();
+
+            
+            setTimeout(() => {
+              this.chatObserver.send(this.joinChatsCommand)
+              this.startListenChat();
+            }, 1000)
           }
           else {
             this.messageService.add({ severity: 'info', summary: 'No hay streamers agendados', detail: 'Espera la siguiente hora y checa de nuevo la sección de apoyo', sticky: true });
@@ -292,25 +305,23 @@ export class Menu implements OnInit {
   }
 
   startListenChat() {
-    this.chatObserver.addEventListener("open", () => {
 
-      // Requesting Twitch Capabilities
-      this.chatObserver.send('CAP REQ :twitch.tv/membership twitch.tv/tags twitch.tv/commands')
+    // Requesting Twitch Capabilities
+    this.chatObserver.send('CAP REQ :twitch.tv/membership twitch.tv/tags twitch.tv/commands')
 
-      // Anonymous credentials just to listen chat events (read-only)
-      this.chatObserver.send("PASS SCHMOOPIIE\r\n");
-      this.chatObserver.send(`NICK justinfan${Math.floor(Math.random() * 100000)}\r\n`);
+    // Anonymous credentials just to listen chat events (read-only)
+    this.chatObserver.send("PASS SCHMOOPIIE\r\n");
+    this.chatObserver.send(`NICK justinfan${Math.floor(Math.random() * 100000)}\r\n`);
 
-      // Join to the chat of the streamer
-      this.chatObserver.send(this.joinChatsCommand)
+    // Join to the chat of the streamer
+    this.chatObserver.send(this.joinChatsCommand)
 
-      console.log("Se estableció la conexión")
-
-      this.checkUserComments();
-    })
+    this.checkUserComments();
 
     this.chatObserver.addEventListener("message", (event) => {
       const message = event.data;
+
+      console.log("Se establecio la conexion")
 
       // Twitch verification the connection stills up
       if (message.startsWith("PING")) {
@@ -413,7 +424,6 @@ export class Menu implements OnInit {
 
       this.countMessage1.set(0);
       this.countMessage2.set(0);
-      this.chatObserver.close()
     }, (60 * 60000));
   }
 
